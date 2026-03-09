@@ -381,6 +381,21 @@
             return div.innerHTML
         }
 
+        // 🔥 NOVA FUNÇÃO: Registrar visita
+        async function registrarVisita(vendedorId) {
+            try {
+                await supabaseClient
+                    .from('visitas')
+                    .insert({
+                        vendedor_id: vendedorId,
+                        user_agent: navigator.userAgent
+                    })
+                console.log('Visita registrada com sucesso!')
+            } catch (error) {
+                console.error('Erro ao registrar visita:', error)
+            }
+        }
+
         // Carregar dados do vendedor
         async function loadVendedor() {
             const { data: vendedor } = await supabaseClient
@@ -396,6 +411,9 @@
             }
 
             vendedorId = vendedor.id
+            
+            // 🔥 REGISTRAR VISITA
+            await registrarVisita(vendedor.id)
             
             document.getElementById('vendorName').textContent = vendedor.nome || 'Vendedor'
             
