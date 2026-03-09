@@ -395,6 +395,13 @@
             background: #ffffff;
             border-radius: 12px;
             border: 1px solid rgba(0, 0, 0, 0.05);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .link-value:hover {
+            background: #f8f8f8;
+            border-color: #000000;
         }
 
         /* iOS Style Buttons */
@@ -776,7 +783,7 @@
             <!-- Link Container -->
             <div class="link-container">
                 <div class="link-label">Seu link permanente</div>
-                <div class="link-value" id="linkDisplay">Carregando...</div>
+                <div class="link-value" id="linkDisplay" onclick="window.open(this.textContent, '_blank')">Carregando...</div>
             </div>
 
             <div class="btn-group">
@@ -860,35 +867,80 @@
             }
         }
 
+        // 🔥 FUNÇÃO PARA CARREGAR MÉTRICAS REAIS
+        async function loadUserMetrics(userId) {
+            try {
+                // Total de conversas
+                const { count: totalConversas } = await supabaseClient
+                    .from('conversas')
+                    .select('*', { count: 'exact', head: true })
+                    .eq('vendedor_id', userId)
+
+                // Total de visitas ao link
+                const { count: totalVisitas } = await supabaseClient
+                    .from('visitas')
+                    .select('*', { count: 'exact', head: true })
+                    .eq('vendedor_id', userId)
+
+                document.getElementById('chatCount').textContent = totalConversas || 0
+                document.getElementById('linkClicks').textContent = totalVisitas || 0
+
+            } catch (error) {
+                console.error('Erro ao carregar métricas:', error)
+            }
+        }
+
         // Carregar dados
         async function loadVendedor() {
             if (!user) return
 
-            const { data } = await supabaseClient
+            let { data } = await supabaseClient
                 .from('vendedores')
                 .select('*')
                 .eq('id', user.id)
                 .single()
 
+            // Se não encontrar, criar registro
+            if (!data) {
+                const hash = Math.random().toString(36).substring(2, 15) + 
+                            Math.random().toString(36).substring(2, 15)
+                
+                const { data: newData } = await supabaseClient
+                    .from('vendedores')
+                    .insert({
+                        id: user.id,
+                        nome: user.user_metadata?.name || 'Usuário',
+                        descricao: '',
+                        link_hash: hash
+                    })
+                    .select()
+                    .single()
+                
+                data = newData
+            }
+
+            // Se não tiver link_hash, criar um
+            if (data && !data.link_hash) {
+                const hash = Math.random().toString(36).substring(2, 15) + 
+                            Math.random().toString(36).substring(2, 15)
+                
+                await supabaseClient
+                    .from('vendedores')
+                    .update({ link_hash: hash })
+                    .eq('id', user.id)
+                
+                data.link_hash = hash
+            }
+
             if (data) {
                 vendedorData = data
-                
-                // Se não tiver link_hash, criar um automaticamente
-                if (!data.link_hash) {
-                    const hash = Math.random().toString(36).substring(2, 15) + 
-                                Math.random().toString(36).substring(2, 15)
-                    
-                    await supabaseClient
-                        .from('vendedores')
-                        .update({ link_hash: hash })
-                        .eq('id', user.id)
-                    
-                    data.link_hash = hash
-                }
                 
                 document.getElementById('welcomeName').textContent = data.nome ? `Olá, ${data.nome}` : 'Bem-vindo'
                 document.getElementById('modalName').value = data.nome || ''
                 document.getElementById('modalDescription').value = data.descricao || ''
+                
+                // Carregar métricas do usuário
+                await loadUserMetrics(user.id)
                 
                 // Atualizar avatar
                 if (data.foto_url) {
@@ -899,15 +951,16 @@
                     document.getElementById('uploadHint').textContent = 'Foto carregada'
                 }
                 
-                // Link permanente (NÃO TEM BOTÃO DE GERAR)
+                // 🔥 LINK DO CHAT - AGORA FUNCIONAL!
                 if (data.link_hash) {
-                    document.getElementById('linkDisplay').textContent = 
-                        `https://keygram.vercel.app/chat.html?hash=${data.link_hash}`
+                    const baseUrl = window.location.origin
+                    const chatUrl = `${baseUrl}/chat.html?hash=${data.link_hash}`
+                    document.getElementById('linkDisplay').textContent = chatUrl
                 }
             }
         }
 
-        // Salvar perfil (apenas nome e descrição)
+        // Salvar perfil
         window.saveSettings = async function() {
             const nome = document.getElementById('modalName').value
             const descricao = document.getElementById('modalDescription').value
@@ -951,8 +1004,6 @@
                 .eq('vendedor_id', user.id)
                 .eq('status', 'active')
                 .order('created_at', { ascending: false })
-
-            document.getElementById('chatCount').textContent = data?.length || 0
 
             const lista = document.getElementById('conversasList')
             if (!data || data.length === 0) {
@@ -1034,4 +1085,4 @@
         init()
     </script>
 </body>
-</html>
+    </html>
