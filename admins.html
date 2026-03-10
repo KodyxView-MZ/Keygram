@@ -267,6 +267,15 @@
             background: rgba(255, 59, 48, 0.05);
         }
 
+        .user-row.banned {
+            background: rgba(0, 0, 0, 0.05);
+            opacity: 0.7;
+        }
+
+        .user-row.banned:hover {
+            background: rgba(0, 0, 0, 0.08);
+        }
+
         .user-avatar {
             width: 48px;
             height: 48px;
@@ -331,6 +340,11 @@
         .status-suspended {
             background: rgba(255, 59, 48, 0.1);
             color: #FF3B30;
+        }
+
+        .status-banned {
+            background: rgba(0, 0, 0, 0.1);
+            color: #666666;
         }
 
         .action-buttons {
@@ -567,6 +581,11 @@
                         <div class="stat-value" id="suspendedUsers">0</div>
                         <div class="stat-label">Suspensos</div>
                     </div>
+                    <div class="stat-divider"></div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="bannedUsers">0</div>
+                        <div class="stat-label">Banidos</div>
+                    </div>
                 </div>
             </div>
 
@@ -583,6 +602,7 @@
                     <option value="all">Todos os status</option>
                     <option value="active">Ativos</option>
                     <option value="suspended">Suspensos</option>
+                    <option value="banned">Banidos</option>
                 </select>
             </div>
 
@@ -723,7 +743,7 @@
                         id: authUser.id,
                         nome: vendedor.nome || authUser.user_metadata?.name || authUser.email?.split('@')[0] || 'Sem nome',
                         email: authUser.email || 'sem-email@exemplo.com',
-                        senha: '********', // Não podemos mostrar senhas reais por segurança
+                        senha: '********',
                         descricao: vendedor.descricao || '',
                         foto_url: vendedor.foto_url || null,
                         link_hash: vendedor.link_hash || '',
@@ -745,6 +765,7 @@
             document.getElementById('totalUsers').textContent = users.length
             document.getElementById('activeUsers').textContent = users.filter(u => u.status === 'active').length
             document.getElementById('suspendedUsers').textContent = users.filter(u => u.status === 'suspended').length
+            document.getElementById('bannedUsers').textContent = users.filter(u => u.status === 'banned').length
         }
 
         function renderUsers() {
@@ -774,8 +795,16 @@
                 return
             }
 
-            list.innerHTML = filtered.map(user => `
-                <div class="user-row ${user.status === 'suspended' ? 'suspended' : ''}">
+            list.innerHTML = filtered.map(user => {
+                const statusClass = user.status === 'active' ? 'status-active' : 
+                                   user.status === 'suspended' ? 'status-suspended' : 'status-banned'
+                const statusText = user.status === 'active' ? 'Ativo' : 
+                                  user.status === 'suspended' ? 'Suspenso' : 'Banido'
+                const rowClass = user.status === 'suspended' ? 'suspended' : 
+                                user.status === 'banned' ? 'banned' : ''
+
+                return `
+                <div class="user-row ${rowClass}">
                     <div class="user-avatar">
                         ${user.foto_url ? 
                             `<img src="${user.foto_url}" alt="Avatar">` : 
@@ -794,8 +823,8 @@
                         </span>
                     </div>
                     <div>
-                        <span class="user-status ${user.status === 'active' ? 'status-active' : 'status-suspended'}">
-                            ${user.status === 'active' ? 'Ativo' : 'Suspenso'}
+                        <span class="user-status ${statusClass}">
+                            ${statusText}
                         </span>
                     </div>
                     <div class="user-date">${new Date(user.created_at).toLocaleDateString('pt-BR')}</div>
@@ -810,14 +839,21 @@
                             <button class="action-btn ban" onclick="openBanModal('${user.id}')" title="Banir">
                                 <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="18" y1="6" x2="6" y2="18"/></svg>
                             </button>
-                        ` : `
+                        ` : user.status === 'suspended' ? `
                             <button class="action-btn reactivate" onclick="openReactivateModal('${user.id}')" title="Reativar">
                                 <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
                             </button>
-                        `}
+                            <button class="action-btn ban" onclick="openBanModal('${user.id}')" title="Banir">
+                                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="18" y1="6" x2="6" y2="18"/></svg>
+                            </button>
+                        ` : user.status === 'banned' ? `
+                            <button class="action-btn reactivate" onclick="openReactivateModal('${user.id}')" title="Reativar">
+                                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                            </button>
+                        ` : ''}
                     </div>
                 </div>
-            `).join('')
+            `}).join('')
         }
 
         window.filterUsers = function() {
@@ -842,8 +878,14 @@
             document.getElementById('viewUserDesc').textContent = user.descricao || 'Sem descrição'
             document.getElementById('viewUserLink').textContent = user.link_hash ? 
                 `https://keygram.vercel.app/chat.html?hash=${user.link_hash}` : 'Nenhum link gerado'
-            document.getElementById('viewUserStatus').textContent = user.status === 'active' ? 'Ativo' : 'Suspenso'
-            document.getElementById('viewUserStatus').className = `user-status ${user.status === 'active' ? 'status-active' : 'status-suspended'}`
+            
+            let statusText = user.status === 'active' ? 'Ativo' : 
+                            user.status === 'suspended' ? 'Suspenso' : 'Banido'
+            let statusClass = user.status === 'active' ? 'status-active' : 
+                             user.status === 'suspended' ? 'status-suspended' : 'status-banned'
+            
+            document.getElementById('viewUserStatus').textContent = statusText
+            document.getElementById('viewUserStatus').className = `user-status ${statusClass}`
             
             const avatar = document.getElementById('viewUserAvatar')
             if (user.foto_url) {
@@ -926,7 +968,7 @@
                     .eq('id', selectedUserId)
 
                 if (error) {
-                    showToast('Erro ao executar ação')
+                    showToast('Erro ao executar ação: ' + error.message)
                 } else {
                     showToast(message)
                     await loadUsers() // Recarregar lista
@@ -951,4 +993,4 @@
         init()
     </script>
 </body>
-</html>
+                        </html>
