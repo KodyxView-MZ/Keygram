@@ -175,6 +175,19 @@
             border-bottom-right-radius: 6px;
         }
 
+        /* Estilo para imagens */
+        .message-image {
+            max-width: 200px;
+            max-height: 200px;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .message-image:hover {
+            transform: scale(1.05);
+        }
+
         .message-time {
             font-size: 11px;
             color: #8e8e93;
@@ -301,6 +314,45 @@
         .toast.show {
             transform: translateX(-50%) translateY(20px);
         }
+
+        /* Modal de imagem */
+        .image-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .image-modal.active {
+            display: flex;
+        }
+
+        .image-modal img {
+            max-width: 90%;
+            max-height: 90%;
+            border-radius: 16px;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 44px;
+            height: 44px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: white;
+        }
     </style>
 </head>
 <body>
@@ -343,6 +395,12 @@
         </div>
     </div>
 
+    <!-- Modal de imagem -->
+    <div class="image-modal" id="imageModal" onclick="this.classList.remove('active')">
+        <span class="close-modal" onclick="document.getElementById('imageModal').classList.remove('active')">✕</span>
+        <img id="modalImage" src="" alt="">
+    </div>
+
     <!-- Toast -->
     <div id="toast" class="toast"></div>
 
@@ -379,6 +437,32 @@
             const div = document.createElement('div')
             div.textContent = text
             return div.innerHTML
+        }
+
+        // Função para abrir imagem em tela cheia
+        window.openImageModal = function(src) {
+            document.getElementById('modalImage').src = src;
+            document.getElementById('imageModal').classList.add('active');
+        }
+
+        // Função para formatar mensagem (suporta imagens)
+        function formatMessage(msg) {
+            // Verificar se é imagem base64
+            const isBase64Image = msg.conteudo?.startsWith('data:image');
+            
+            // Verificar se é imagem URL
+            const isUrlImage = msg.conteudo?.startsWith('http') && 
+                              (msg.conteudo.includes('.jpg') || msg.conteudo.includes('.png') || 
+                               msg.conteudo.includes('.jpeg') || msg.conteudo.includes('.gif') ||
+                               msg.conteudo.includes('.webp'));
+            
+            if (isBase64Image || isUrlImage) {
+                // É imagem - mostra a imagem
+                return `<img src="${escapeHtml(msg.conteudo)}" class="message-image" onclick="openImageModal('${escapeHtml(msg.conteudo)}')">`;
+            } else {
+                // É texto normal
+                return escapeHtml(msg.conteudo);
+            }
         }
 
         // 🔥 NOVA FUNÇÃO: Registrar visita
@@ -481,7 +565,7 @@
 
             area.innerHTML = messages.map(msg => `
                 <div class="message ${msg.remetente}">
-                    <div class="message-bubble">${escapeHtml(msg.conteudo)}</div>
+                    <div class="message-bubble">${formatMessage(msg)}</div>
                     <div class="message-time">${new Date(msg.created_at).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}</div>
                 </div>
             `).join('')
@@ -511,7 +595,7 @@
                         const msgDiv = document.createElement('div')
                         msgDiv.className = `message ${payload.new.remetente}`
                         msgDiv.innerHTML = `
-                            <div class="message-bubble">${escapeHtml(payload.new.conteudo)}</div>
+                            <div class="message-bubble">${formatMessage(payload.new)}</div>
                             <div class="message-time">${new Date(payload.new.created_at).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}</div>
                         `
                         area.appendChild(msgDiv)
