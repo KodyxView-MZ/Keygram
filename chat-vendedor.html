@@ -405,22 +405,32 @@
             return div.innerHTML
         }
 
-        // Função para formatar mensagem (texto ou imagem)
+        // FUNÇÃO CORRIGIDA - Agora detecta base64 e URLs de imagem
         function formatMessage(msg) {
-            const isImage = msg.conteudo?.startsWith('http') && 
-                          (msg.conteudo.includes('.jpg') || msg.conteudo.includes('.png') || 
-                           msg.conteudo.includes('.jpeg') || msg.conteudo.includes('.gif'));
+            // Verificar se é imagem base64
+            const isBase64Image = msg.conteudo?.startsWith('data:image');
             
-            const isVideo = msg.conteudo?.startsWith('http') && 
-                          (msg.conteudo.includes('.mp4') || msg.conteudo.includes('.mov'));
+            // Verificar se é imagem URL
+            const isUrlImage = msg.conteudo?.startsWith('http') && 
+                              (msg.conteudo.includes('.jpg') || msg.conteudo.includes('.png') || 
+                               msg.conteudo.includes('.jpeg') || msg.conteudo.includes('.gif') ||
+                               msg.conteudo.includes('.webp'));
             
-            if (isImage) {
+            // Verificar se é vídeo URL
+            const isUrlVideo = msg.conteudo?.startsWith('http') && 
+                              (msg.conteudo.includes('.mp4') || msg.conteudo.includes('.mov') ||
+                               msg.conteudo.includes('.webm'));
+            
+            if (isBase64Image || isUrlImage) {
+                // É imagem - mostra a imagem
                 return `<img src="${escapeHtml(msg.conteudo)}" class="message-image" onclick="openImageModal('${escapeHtml(msg.conteudo)}')">`;
-            } else if (isVideo) {
+            } else if (isUrlVideo) {
+                // É vídeo - mostra player
                 return `<video controls style="max-width:200px; max-height:200px; border-radius:16px;">
                            <source src="${escapeHtml(msg.conteudo)}" type="video/mp4">
                         </video>`;
             } else {
+                // É texto normal
                 return escapeHtml(msg.conteudo);
             }
         }
@@ -470,7 +480,6 @@
                         Nenhuma mensagem ainda. Envie algo para o lead!
                     </div>
                 `
-                // GARANTIR QUE O SCROLL APAREÇA
                 setTimeout(() => {
                     area.scrollTop = area.scrollHeight;
                 }, 100);
@@ -484,7 +493,6 @@
                 </div>
             `).join('')
 
-            // SCROLL AUTOMÁTICO PARA O FUNDO
             setTimeout(() => {
                 area.scrollTop = area.scrollHeight;
             }, 100);
@@ -511,7 +519,6 @@
                         `
                         area.appendChild(msgDiv)
                         
-                        // SCROLL AUTOMÁTICO PARA A NOVA MENSAGEM
                         setTimeout(() => {
                             area.scrollTop = area.scrollHeight;
                         }, 50);
@@ -544,22 +551,20 @@
             input.value = ''
             sendButton.disabled = false
             
-            // Scroll automático após enviar
             setTimeout(() => {
                 document.getElementById('messagesArea').scrollTop = document.getElementById('messagesArea').scrollHeight;
             }, 50);
         }
 
-        // Funções para envio de mídia
         window.showMediaOptions = function() {
             document.getElementById('fileInput').click();
         }
 
+        // FUNÇÃO CORRIGIDA - Agora carrega as mensagens após o upload
         window.handleFileSelect = async function(event) {
             const file = event.target.files[0];
             if (!file) return;
 
-            // Verificar tipo
             const isImage = file.type.startsWith('image/');
             const isVideo = file.type.startsWith('video/');
             
@@ -568,8 +573,7 @@
                 return;
             }
 
-            // Verificar tamanho
-            if (file.size > 10 * 1024 * 1024) { // 10MB
+            if (file.size > 10 * 1024 * 1024) {
                 showToast('Arquivo muito grande. Máximo 10MB.');
                 return;
             }
@@ -577,13 +581,11 @@
             showToast('Enviando arquivo...');
 
             try {
-                // Converter para base64
                 const reader = new FileReader();
                 reader.readAsDataURL(file);
                 reader.onload = async function() {
                     const base64 = reader.result;
                     
-                    // Salvar mensagem
                     const { error } = await supabaseClient
                         .from('mensagens')
                         .insert({
@@ -595,9 +597,10 @@
                     if (error) throw error;
                     
                     showToast('Arquivo enviado!');
-                    
-                    // Limpar input
                     document.getElementById('fileInput').value = '';
+                    
+                    // 🔥 CORREÇÃO: Recarregar mensagens para mostrar a imagem
+                    await loadMessages();
                 };
             } catch (error) {
                 showToast('Erro ao enviar arquivo');
