@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -147,7 +148,7 @@
             outline: none;
             border-color: #000000;
             background: #ffffff;
-            box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.02);
+            boxplaceholderjj0 0 4px rgba(0, 0, 0, 0.02);
         }
 
         input::placeholder {
@@ -847,6 +848,7 @@
         setLoading('login-btn', true)
 
         try {
+            // 🔥 VERIFICAÇÃO PARA ADMIN
             if (email === 'vantix.mz@gmail.com' && password === 'KEYGRAM2K26') {
                 showToast('Acesso admin!', 'success')
                 setTimeout(() => {
@@ -855,6 +857,16 @@
                 return
             }
 
+            // 🔥 VERIFICAÇÃO PARA PARCEIRO
+            if (email === 'Sidneysmax@gmail.com' && password === 'PKEYGRAM') {
+                showToast('Acesso parceiro!', 'success')
+                setTimeout(() => {
+                    window.location.href = 'parceiro.html'
+                }, 500)
+                return
+            }
+
+            // Login normal
             const { data, error } = await supabaseClient.auth.signInWithPassword({
                 email: email,
                 password: password
@@ -977,4 +989,4 @@
     }
 </script>
 </body>
-                </html>
+    </html>
