@@ -116,6 +116,28 @@
             background: #ffffff;
         }
 
+        /* NOVO: Estilo para selo de verificado */
+        .verified-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 20px;
+            height: 20px;
+            background: #007AFF;
+            border-radius: 10px;
+            color: white;
+            font-size: 12px;
+            margin-left: 4px;
+        }
+
+        .verified-badge svg {
+            width: 12px;
+            height: 12px;
+            stroke: white;
+            stroke-width: 2.5;
+            fill: none;
+        }
+
         /* STATUS BLOCK SCREEN */
         .status-block {
             display: flex;
@@ -235,6 +257,9 @@
 
         .welcome-section {
             margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
 
         .welcome-title {
@@ -242,6 +267,9 @@
             font-weight: 600;
             color: #000000;
             margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
         .welcome-subtitle {
@@ -803,6 +831,240 @@
             height: 18px;
             stroke: #666;
         }
+
+        /* NOVOS ESTILOS PARA AUTOMAÇÃO */
+        .automacao-status {
+            background: #ffffff;
+            border: 1px solid #f0f0f0;
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .status-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .status-info svg {
+            width: 24px;
+            height: 24px;
+            stroke: #000000;
+        }
+
+        .status-info span {
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        /* Toggle Switch */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 52px;
+            height: 28px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #e0e0e0;
+            transition: .3s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 24px;
+            width: 24px;
+            left: 2px;
+            bottom: 2px;
+            background-color: white;
+            transition: .3s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: #34C759;
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(24px);
+        }
+
+        .mensagem-item {
+            background: #f8f8f8;
+            border: 1px solid #f0f0f0;
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 16px;
+            transition: all 0.2s;
+        }
+
+        .mensagem-item:hover {
+            border-color: #000000;
+        }
+
+        .mensagem-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .mensagem-numero {
+            width: 28px;
+            height: 28px;
+            background: #000000;
+            color: white;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .mensagem-tipo {
+            font-size: 14px;
+            font-weight: 500;
+            color: #666666;
+        }
+
+        .btn-icon {
+            width: 32px;
+            height: 32px;
+            border: 1px solid #f0f0f0;
+            background: white;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            margin-left: auto;
+            color: #666;
+        }
+
+        .btn-icon:hover {
+            border-color: #000000;
+            color: #000000;
+        }
+
+        .mensagem-conteudo {
+            font-size: 15px;
+            color: #000000;
+            padding: 12px;
+            background: white;
+            border-radius: 16px;
+            border: 1px solid #f0f0f0;
+            margin-bottom: 12px;
+        }
+
+        .mensagem-timing {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: #8e8e93;
+        }
+
+        .mensagem-timing svg {
+            width: 16px;
+            height: 16px;
+            stroke: #8e8e93;
+        }
+
+        .btn-add-mensagem {
+            width: 100%;
+            padding: 16px;
+            border: 1px dashed #cccccc;
+            border-radius: 20px;
+            background: transparent;
+            color: #666666;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin: 20px 0;
+        }
+
+        .btn-add-mensagem:hover {
+            border-color: #000000;
+            color: #000000;
+        }
+
+        .btn-add-mensagem svg {
+            width: 20px;
+            height: 20px;
+            stroke: currentColor;
+        }
+
+        .estatisticas-automacao {
+            background: linear-gradient(135deg, #f8f8f8 0%, #ffffff 100%);
+            border-radius: 20px;
+            padding: 20px;
+            margin-top: 24px;
+            border: 1px solid #f0f0f0;
+        }
+
+        .estatisticas-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .estatisticas-header svg {
+            width: 20px;
+            height: 20px;
+            stroke: #000000;
+        }
+
+        .estatisticas-header span {
+            font-size: 14px;
+            font-weight: 600;
+            color: #000000;
+        }
+
+        .estatisticas-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .estatistica-item {
+            text-align: center;
+        }
+
+        .estatistica-valor {
+            font-size: 24px;
+            font-weight: 700;
+            color: #000000;
+            margin-bottom: 4px;
+        }
+
+        .estatistica-label {
+            font-size: 12px;
+            color: #8e8e93;
+        }
     </style>
 </head>
 <body>
@@ -840,13 +1102,20 @@
                 </svg>
                 <span>Chats</span>
             </div>
-            <div class="nav-item" onclick="switchTab('grupos')" id="navGrupos">
+            <div class="nav-item" onclick="emDesenvolvimento('grupos')" id="navGrupos">
                 <svg viewBox="0 0 24 24">
                     <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
                     <line x1="9" y1="9" x2="15" y2="15"/>
                     <line x1="15" y1="9" x2="9" y2="15"/>
                 </svg>
                 <span>Grupos</span>
+            </div>
+            <div class="nav-item" onclick="emDesenvolvimento('automacao')" id="navAutomacao">
+                <svg viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="10"/>
+                    <polyline points="12 6 12 12 16 14"/>
+                </svg>
+                <span>Automação</span>
             </div>
             <div class="nav-item" onclick="openSettings()" id="navSettings">
                 <svg viewBox="0 0 24 24">
@@ -1011,6 +1280,44 @@
         </div>
     </div>
 
+    <!-- Modal de Edição de Mensagem -->
+    <div class="modal" id="editarMensagemModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <svg viewBox="0 0 24 24">
+                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                    <path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4Z"/>
+                </svg>
+                <h2>Editar mensagem</h2>
+            </div>
+            
+            <div class="input-group">
+                <label class="input-label">Conteúdo da mensagem</label>
+                <textarea id="mensagemConteudo" rows="4" placeholder="Digite sua mensagem..."></textarea>
+            </div>
+
+            <div class="input-group">
+                <label class="input-label">Quando enviar</label>
+                <select id="mensagemTiming" class="filter-select" style="width: 100%;">
+                    <option value="imediato">Imediatamente</option>
+                    <option value="minutos">Após X minutos</option>
+                    <option value="horas">Após X horas</option>
+                    <option value="resposta">Após lead responder</option>
+                </select>
+            </div>
+
+            <div class="input-group hidden" id="timingValorGroup">
+                <label class="input-label">Valor</label>
+                <input type="number" id="timingValor" placeholder="5" min="1">
+            </div>
+
+            <div class="btn-group">
+                <button class="btn btn-outline" onclick="closeEditarMensagemModal()">Cancelar</button>
+                <button class="btn btn-primary" onclick="salvarMensagem()">Salvar</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Toast -->
     <div id="toast" class="toast"></div>
 
@@ -1026,6 +1333,8 @@
         let user = null
         let grupos = []
         let userStatus = 'active'
+        let automacaoAtiva = false
+        let mensagemEditando = null
 
         function showToast(message) {
             const toast = document.getElementById('toast')
@@ -1045,16 +1354,26 @@
             }
         }
 
+        // NOVA FUNÇÃO: Notificação de "Em desenvolvimento"
+        window.emDesenvolvimento = function(recurso) {
+            const mensagens = {
+                'grupos': '📁 Grupos de prévia',
+                'automacao': '🤖 Automação de conversão'
+            }
+            
+            showToast(`✨ ${mensagens[recurso]} está em desenvolvimento! Em breve disponível.`)
+        }
+
         // FUNÇÃO MODIFICADA: Mostrar modal da comunidade SEMPRE
         function showCommunityModal() {
-            // SEMPRE mostrar o modal quando o usuário entra
             document.getElementById('communityModal').classList.add('active');
         }
 
-        // FUNÇÃO: Fechar modal da comunidade
         window.closeCommunityModal = function() {
             document.getElementById('communityModal').classList.remove('active');
         }
+
+        // Funções para automação (removidas, mas mantidas para não quebrar)
 
         // MOSTRAR TELA DE BLOQUEIO
         function showBlockScreen(status) {
@@ -1098,7 +1417,6 @@
                 </div>
             `
             
-            // Esconder bottom nav
             document.querySelector('.bottom-nav').style.display = 'none'
         }
 
@@ -1111,7 +1429,7 @@
                 <!-- Welcome Section -->
                 <div class="welcome-section">
                     <h1 class="welcome-title" id="welcomeName">Bem-vindo</h1>
-                    <p class="welcome-subtitle">Gerencie suas conversas e grupos</p>
+                    <p class="welcome-subtitle">Dashboard</p>
                 </div>
 
                 <!-- Stats -->
@@ -1172,12 +1490,10 @@
                 </div>
             `
             
-            // Carregar dados
             loadVendedor()
             loadConversas()
             setInterval(loadConversas, 30000)
             
-            // Mostrar modal da comunidade SEMPRE
             showCommunityModal()
         }
 
@@ -1189,7 +1505,6 @@
                 return false
             }
             
-            // Verificar status do usuário
             const { data } = await supabaseClient
                 .from('vendedores')
                 .select('status')
@@ -1207,7 +1522,6 @@
             return true
         }
 
-        // Upload para Storage
         async function uploadFoto(file) {
             const fileExt = file.name.split('.').pop()
             const fileName = `${user.id}_${Date.now()}.${fileExt}`
@@ -1323,7 +1637,19 @@
             if (data) {
                 vendedorData = data
                 
-                document.getElementById('welcomeName').textContent = data.nome ? `Olá, ${data.nome}` : 'Bem-vindo'
+                // MOSTRAR NOME COM SELO SE FOR VERIFICADO
+                const welcomeTitle = document.getElementById('welcomeName')
+                if (data.verified) {
+                    welcomeTitle.innerHTML = `Olá, ${data.nome} 
+                        <span class="verified-badge" title="Vendedor Verificado">
+                            <svg viewBox="0 0 24 24">
+                                <polyline points="20 6 9 17 4 12"/>
+                            </svg>
+                        </span>`
+                } else {
+                    welcomeTitle.textContent = `Olá, ${data.nome || 'Bem-vindo'}`
+                }
+                
                 document.getElementById('modalName').value = data.nome || ''
                 document.getElementById('modalDescription').value = data.descricao || ''
                 
@@ -1373,7 +1699,6 @@
             showToast('Link copiado')
         }
 
-        // GRUPOS
         async function loadGrupos() {
             if (!user) return
 
@@ -1421,7 +1746,6 @@
             `).join('')
         }
 
-        // FUNÇÕES GLOBAIS ADICIONADAS
         window.openCriarGrupoModal = function() {
             document.getElementById('criarGrupoModal').classList.add('active')
         }
@@ -1462,7 +1786,6 @@
             }
         }
 
-        // CONVERSAS
         async function loadConversas() {
             if (!user) return
 
@@ -1503,30 +1826,30 @@
             `).join('')
         }
 
-        // NAVEGAÇÃO
+        // NAVEGAÇÃO ATUALIZADA
         window.switchTab = function(tab) {
             if (userStatus !== 'active') return
             
             const navChats = document.getElementById('navChats')
             const navGrupos = document.getElementById('navGrupos')
+            const navAutomacao = document.getElementById('navAutomacao')
             const navSettings = document.getElementById('navSettings')
             const chatsSection = document.getElementById('chatsSection')
             const gruposSection = document.getElementById('gruposSection')
 
-            if (!navChats || !navGrupos || !navSettings || !chatsSection || !gruposSection) return
+            if (!navChats || !navGrupos || !navAutomacao || !navSettings) return
 
             navChats.classList.remove('active')
             navGrupos.classList.remove('active')
+            navAutomacao.classList.remove('active')
             navSettings.classList.remove('active')
 
             if (tab === 'chats') {
                 navChats.classList.add('active')
-                chatsSection.classList.remove('hidden')
-                gruposSection.classList.add('hidden')
+                showNormalContent()
             } else if (tab === 'grupos') {
                 navGrupos.classList.add('active')
-                chatsSection.classList.add('hidden')
-                gruposSection.classList.remove('hidden')
+                showNormalContent()
                 loadGrupos()
             }
         }
@@ -1546,6 +1869,7 @@
             
             document.getElementById('navChats').classList.remove('active')
             document.getElementById('navGrupos').classList.remove('active')
+            document.getElementById('navAutomacao').classList.remove('active')
             document.getElementById('navSettings').classList.add('active')
         }
 
@@ -1567,4 +1891,4 @@
         init()
     </script>
 </body>
-                        </html>
+                    </html>
