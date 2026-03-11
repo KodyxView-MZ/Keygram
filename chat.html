@@ -79,6 +79,31 @@
             font-weight: 600;
             color: #000000;
             margin-bottom: 2px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* NOVO: Estilo para selo de verificado */
+        .verified-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 20px;
+            height: 20px;
+            background: #007AFF;
+            border-radius: 10px;
+            color: white;
+            font-size: 12px;
+            margin-left: 4px;
+        }
+
+        .verified-badge svg {
+            width: 12px;
+            height: 12px;
+            stroke: white;
+            stroke-width: 2.5;
+            fill: none;
         }
 
         .vendor-status {
@@ -499,7 +524,18 @@
             // 🔥 REGISTRAR VISITA
             await registrarVisita(vendedor.id)
             
-            document.getElementById('vendorName').textContent = vendedor.nome || 'Vendedor'
+            // MOSTRAR NOME COM SELO SE FOR VERIFICADO
+            const nomeSpan = document.getElementById('vendorName')
+            if (vendedor.verified) {
+                nomeSpan.innerHTML = `${escapeHtml(vendedor.nome || 'Vendedor')} 
+                    <span class="verified-badge" title="Vendedor Verificado">
+                        <svg viewBox="0 0 24 24">
+                            <polyline points="20 6 9 17 4 12"/>
+                        </svg>
+                    </span>`
+            } else {
+                nomeSpan.textContent = vendedor.nome || 'Vendedor'
+            }
             
             if (vendedor.foto_url) {
                 document.getElementById('vendorAvatar').innerHTML = 
