@@ -24,7 +24,7 @@
             display: flex;
             flex-direction: column;
             height: 100vh;
-            max-width: 1300px;
+            max-width: 1400px;
             margin: 0 auto;
             width: 100%;
             background: #ffffff;
@@ -142,35 +142,49 @@
             color: #8e8e93;
         }
 
-        .stats-card {
-            background: rgba(0, 0, 0, 0.02);
-            border: 1px solid rgba(0, 0, 0, 0.05);
-            border-radius: 24px;
-            padding: 16px 24px;
-            display: flex;
-            align-items: center;
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
             gap: 16px;
+            margin-bottom: 24px;
         }
 
-        .stat-item {
-            text-align: center;
+        .stat-card {
+            background: #f8f8f8;
+            border: 1px solid #f0f0f0;
+            border-radius: 24px;
+            padding: 20px;
+        }
+
+        .stat-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 14px;
+            background: #ffffff;
+            border: 1px solid #f0f0f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 12px;
+        }
+
+        .stat-icon svg {
+            width: 22px;
+            height: 22px;
+            stroke: #000000;
+            fill: none;
         }
 
         .stat-value {
-            font-size: 24px;
-            font-weight: 600;
+            font-size: 28px;
+            font-weight: 700;
             color: #000000;
+            margin-bottom: 4px;
         }
 
         .stat-label {
-            font-size: 12px;
+            font-size: 13px;
             color: #8e8e93;
-        }
-
-        .stat-divider {
-            width: 1px;
-            height: 30px;
-            background: rgba(0, 0, 0, 0.1);
         }
 
         /* Search Bar */
@@ -231,11 +245,12 @@
             border: 1px solid rgba(0, 0, 0, 0.05);
             border-radius: 28px;
             overflow: hidden;
+            margin-bottom: 24px;
         }
 
         .table-header {
             display: grid;
-            grid-template-columns: 80px 1.5fr 2fr 1.5fr 1.5fr 1fr 120px 140px;
+            grid-template-columns: 80px 2fr 2fr 1.5fr 1.5fr 1fr 120px 160px;
             padding: 16px 20px;
             background: rgba(0, 0, 0, 0.02);
             border-bottom: 1px solid rgba(0, 0, 0, 0.05);
@@ -248,7 +263,7 @@
 
         .user-row {
             display: grid;
-            grid-template-columns: 80px 1.5fr 2fr 1.5fr 1.5fr 1fr 120px 140px;
+            grid-template-columns: 80px 2fr 2fr 1.5fr 1.5fr 1fr 120px 160px;
             padding: 20px;
             border-bottom: 1px solid rgba(0, 0, 0, 0.03);
             align-items: center;
@@ -257,23 +272,6 @@
 
         .user-row:hover {
             background: rgba(0, 0, 0, 0.02);
-        }
-
-        .user-row.suspended {
-            background: rgba(255, 59, 48, 0.03);
-        }
-
-        .user-row.suspended:hover {
-            background: rgba(255, 59, 48, 0.05);
-        }
-
-        .user-row.banned {
-            background: rgba(0, 0, 0, 0.05);
-            opacity: 0.7;
-        }
-
-        .user-row.banned:hover {
-            background: rgba(0, 0, 0, 0.08);
         }
 
         .user-avatar {
@@ -300,6 +298,12 @@
             stroke: #8e8e93;
         }
 
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
         .user-info h4 {
             font-size: 16px;
             font-weight: 500;
@@ -312,12 +316,31 @@
             color: #8e8e93;
         }
 
+        .verified-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 20px;
+            height: 20px;
+            background: #007AFF;
+            border-radius: 10px;
+            color: white;
+            font-size: 12px;
+            margin-left: 4px;
+        }
+
+        .verified-badge svg {
+            width: 12px;
+            height: 12px;
+            stroke: white;
+            fill: none;
+        }
+
         .user-email {
             font-size: 14px;
             color: #000000;
         }
 
-        /* NOVO: Estilo para WhatsApp */
         .user-whatsapp {
             font-size: 14px;
             color: #25D366;
@@ -362,9 +385,15 @@
             color: #666666;
         }
 
+        .status-verified {
+            background: rgba(0, 122, 255, 0.1);
+            color: #007AFF;
+        }
+
         .action-buttons {
             display: flex;
             gap: 8px;
+            flex-wrap: wrap;
         }
 
         .action-btn {
@@ -388,6 +417,10 @@
 
         .action-btn:hover {
             background: rgba(0, 0, 0, 0.05);
+        }
+
+        .action-btn.verify:hover svg {
+            stroke: #007AFF;
         }
 
         .action-btn.whatsapp:hover svg {
@@ -516,6 +549,15 @@
             background: #1a1a1a;
         }
 
+        .btn-verify {
+            background: #007AFF;
+            color: white;
+        }
+
+        .btn-verify:hover {
+            background: #0051a8;
+        }
+
         .btn-danger {
             background: #FF3B30;
             color: white;
@@ -555,6 +597,117 @@
         .toast.show {
             transform: translateX(-50%) translateY(20px);
         }
+
+        /* Tabs */
+        .admin-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 24px;
+            border-bottom: 1px solid #f0f0f0;
+            padding-bottom: 12px;
+        }
+
+        .tab {
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: #8e8e93;
+        }
+
+        .tab:hover {
+            background: #f5f5f5;
+            color: #000000;
+        }
+
+        .tab.active {
+            background: #000000;
+            color: white;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #000000;
+            margin-bottom: 16px;
+        }
+
+        /* Requests List */
+        .requests-list {
+            background: #ffffff;
+            border: 1px solid #f0f0f0;
+            border-radius: 28px;
+            overflow: hidden;
+        }
+
+        .request-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 20px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .request-item:last-child {
+            border-bottom: none;
+        }
+
+        .request-user {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex: 2;
+        }
+
+        .request-user img {
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
+            object-fit: cover;
+        }
+
+        .request-info h4 {
+            font-size: 16px;
+            font-weight: 500;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .request-info p {
+            font-size: 13px;
+            color: #8e8e93;
+        }
+
+        .request-stats {
+            display: flex;
+            gap: 24px;
+            flex: 2;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 18px;
+            font-weight: 600;
+            color: #000000;
+        }
+
+        .stat-label {
+            font-size: 11px;
+            color: #8e8e93;
+            text-transform: uppercase;
+        }
+
+        .request-actions {
+            display: flex;
+            gap: 8px;
+        }
     </style>
 </head>
 <body>
@@ -579,73 +732,157 @@
 
         <!-- Main Content -->
         <div class="content-area">
-            <!-- Page Header -->
-            <div class="page-header">
-                <div class="page-title">
-                    <h1>Administração</h1>
-                    <p>Gerencie todos os usuários da plataforma</p>
-                </div>
-                <div class="stats-card">
-                    <div class="stat-item">
-                        <div class="stat-value" id="totalUsers">0</div>
-                        <div class="stat-label">Total</div>
-                    </div>
-                    <div class="stat-divider"></div>
-                    <div class="stat-item">
-                        <div class="stat-value" id="activeUsers">0</div>
-                        <div class="stat-label">Ativos</div>
-                    </div>
-                    <div class="stat-divider"></div>
-                    <div class="stat-item">
-                        <div class="stat-value" id="suspendedUsers">0</div>
-                        <div class="stat-label">Suspensos</div>
-                    </div>
-                    <div class="stat-divider"></div>
-                    <div class="stat-item">
-                        <div class="stat-value" id="bannedUsers">0</div>
-                        <div class="stat-label">Banidos</div>
-                    </div>
-                </div>
+            <!-- Tabs -->
+            <div class="admin-tabs">
+                <div class="tab active" onclick="switchTab('users')">Usuários</div>
+                <div class="tab" onclick="switchTab('verification')">Pedidos de Verificação</div>
+                <div class="tab" onclick="switchTab('verified')">Vendedores Verificados</div>
             </div>
 
-            <!-- Search and Filter -->
-            <div class="search-bar">
-                <div class="search-input">
-                    <svg class="search-icon" viewBox="0 0 24 24">
-                        <circle cx="11" cy="11" r="8"/>
-                        <line x1="21" y1="21" x2="16.65" y2="16.65"/>
-                    </svg>
-                    <input type="text" id="searchInput" placeholder="Buscar por nome, email ou WhatsApp..." onkeyup="filterUsers()">
+            <!-- Users Tab -->
+            <div id="usersTab">
+                <!-- Page Header -->
+                <div class="page-header">
+                    <div class="page-title">
+                        <h1>Usuários</h1>
+                        <p>Gerencie todos os usuários da plataforma</p>
+                    </div>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <svg viewBox="0 0 24 24">
+                                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                                    <circle cx="12" cy="7" r="4"/>
+                                </svg>
+                            </div>
+                            <div class="stat-value" id="totalUsers">0</div>
+                            <div class="stat-label">Total</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <svg viewBox="0 0 24 24">
+                                    <circle cx="12" cy="12" r="10"/>
+                                    <polyline points="12 6 12 12 16 14"/>
+                                </svg>
+                            </div>
+                            <div class="stat-value" id="activeUsers">0</div>
+                            <div class="stat-label">Ativos</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <svg viewBox="0 0 24 24">
+                                    <circle cx="12" cy="12" r="10"/>
+                                    <line x1="12" y1="8" x2="12" y2="16"/>
+                                    <line x1="8" y1="12" x2="16" y2="12"/>
+                                </svg>
+                            </div>
+                            <div class="stat-value" id="suspendedUsers">0</div>
+                            <div class="stat-label">Suspensos</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <svg viewBox="0 0 24 24">
+                                    <circle cx="12" cy="12" r="10"/>
+                                    <line x1="18" y1="6" x2="6" y2="18"/>
+                                </svg>
+                            </div>
+                            <div class="stat-value" id="bannedUsers">0</div>
+                            <div class="stat-label">Banidos</div>
+                        </div>
+                    </div>
                 </div>
-                <select class="filter-select" id="statusFilter" onchange="filterUsers()">
-                    <option value="all">Todos os status</option>
-                    <option value="active">Ativos</option>
-                    <option value="suspended">Suspensos</option>
-                    <option value="banned">Banidos</option>
-                </select>
-            </div>
 
-            <!-- Users Table -->
-            <div class="users-table">
-                <div class="table-header">
-                    <div>Avatar</div>
-                    <div>Usuário</div>
-                    <div>Email</div>
-                    <div>WhatsApp</div>
-                    <div>Senha</div>
-                    <div>Status</div>
-                    <div>Data</div>
-                    <div>Ações</div>
-                </div>
-                <div id="usersList">
-                    <div style="padding: 60px; text-align: center; color: #8e8e93;">
-                        <svg viewBox="0 0 24 24" width="48" height="48" style="stroke: #8e8e93; margin-bottom: 16px;">
-                            <circle cx="12" cy="12" r="10"/>
-                            <line x1="12" y1="8" x2="12" y2="12"/>
-                            <circle cx="12" cy="16" r="0.5" fill="currentColor"/>
+                <!-- Search and Filter -->
+                <div class="search-bar">
+                    <div class="search-input">
+                        <svg class="search-icon" viewBox="0 0 24 24">
+                            <circle cx="11" cy="11" r="8"/>
+                            <line x1="21" y1="21" x2="16.65" y2="16.65"/>
                         </svg>
-                        <p>Carregando usuários...</p>
+                        <input type="text" id="searchInput" placeholder="Buscar por nome, email ou WhatsApp..." onkeyup="filterUsers()">
                     </div>
+                    <select class="filter-select" id="statusFilter" onchange="filterUsers()">
+                        <option value="all">Todos os status</option>
+                        <option value="active">Ativos</option>
+                        <option value="suspended">Suspensos</option>
+                        <option value="banned">Banidos</option>
+                    </select>
+                </div>
+
+                <!-- Users Table -->
+                <div class="users-table">
+                    <div class="table-header">
+                        <div>Avatar</div>
+                        <div>Usuário</div>
+                        <div>Email</div>
+                        <div>WhatsApp</div>
+                        <div>Senha</div>
+                        <div>Status</div>
+                        <div>Data</div>
+                        <div>Ações</div>
+                    </div>
+                    <div id="usersList">
+                        <div style="padding: 60px; text-align: center; color: #8e8e93;">
+                            <svg viewBox="0 0 24 24" width="48" height="48" style="stroke: #8e8e93; margin-bottom: 16px;">
+                                <circle cx="12" cy="12" r="10"/>
+                                <line x1="12" y1="8" x2="12" y2="12"/>
+                                <circle cx="12" cy="16" r="0.5" fill="currentColor"/>
+                            </svg>
+                            <p>Carregando usuários...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Verification Requests Tab -->
+            <div id="verificationTab" style="display: none;">
+                <div class="page-header">
+                    <div class="page-title">
+                        <h1>Pedidos de Verificação</h1>
+                        <p>Vendedores que solicitaram selo de verificação</p>
+                    </div>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <svg viewBox="0 0 24 24">
+                                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                                    <polyline points="22 4 12 14.01 9 11.01"/>
+                                </svg>
+                            </div>
+                            <div class="stat-value" id="pendingRequests">0</div>
+                            <div class="stat-label">Pendentes</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="verificationRequestsList" class="requests-list">
+                    <!-- Lista será preenchida via JavaScript -->
+                </div>
+            </div>
+
+            <!-- Verified Sellers Tab -->
+            <div id="verifiedTab" style="display: none;">
+                <div class="page-header">
+                    <div class="page-title">
+                        <h1>Vendedores Verificados</h1>
+                        <p>Usuários com selo de verificação ativo</p>
+                    </div>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <svg viewBox="0 0 24 24">
+                                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                                    <polyline points="22 4 12 14.01 9 11.01"/>
+                                </svg>
+                            </div>
+                            <div class="stat-value" id="verifiedCount">0</div>
+                            <div class="stat-label">Verificados</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="verifiedSellersList" class="requests-list">
+                    <!-- Lista será preenchida via JavaScript -->
                 </div>
             </div>
         </div>
@@ -684,7 +921,7 @@
                 <div style="width: 80px; height: 80px; border-radius: 20px; background: #f2f2f7; margin: 0 auto 16px; overflow: hidden;">
                     <img id="viewUserAvatar" style="width: 100%; height: 100%; object-fit: cover;">
                 </div>
-                <h3 id="viewUserName" style="margin-bottom: 4px;"></h3>
+                <h3 id="viewUserName" style="margin-bottom: 4px; display: flex; align-items: center; justify-content: center; gap: 4px;"></h3>
                 <p id="viewUserEmail" style="color: #8e8e93; margin-bottom: 8px;"></p>
                 <p id="viewUserWhatsapp" style="color: #25D366; margin-bottom: 8px; display: flex; align-items: center; justify-content: center; gap: 4px;">
                     <svg viewBox="0 0 24 24" width="16" height="16" style="stroke: #25D366;">
@@ -702,6 +939,19 @@
                 <p style="font-size: 13px; color: #8e8e93; margin-bottom: 4px;">Link:</p>
                 <p id="viewUserLink" style="color: #007AFF; word-break: break-all;"></p>
             </div>
+            <div style="margin-bottom: 24px; padding: 12px; background: rgba(0,0,0,0.02); border-radius: 16px;">
+                <p style="font-size: 13px; color: #8e8e93; margin-bottom: 4px;">Métricas:</p>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                    <div>
+                        <p style="font-size: 16px; font-weight: 600;" id="viewUserVendas">0</p>
+                        <p style="font-size: 11px; color: #8e8e93;">Vendas</p>
+                    </div>
+                    <div>
+                        <p style="font-size: 16px; font-weight: 600;" id="viewUserAvaliacao">0.0</p>
+                        <p style="font-size: 11px; color: #8e8e93;">Avaliação</p>
+                    </div>
+                </div>
+            </div>
             <button class="btn btn-primary" onclick="closeViewModal()">Fechar</button>
         </div>
     </div>
@@ -711,11 +961,10 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        // Configuração do Supabase - AGORA COM SERVICE_ROLE KEY
+        // Configuração do Supabase
         const SUPABASE_URL = 'https://ygptfdflmrgennajulwt.supabase.co'
         const SUPABASE_SERVICE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlncHRmZGZsbXJnZW5uYWp1bHd0Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3MzA3NjQwNywiZXhwIjoyMDg4NjUyNDA3fQ.Cd_WmneS4YvhvwMs0AyctnLjnggtgXqEqjryrjVDhtE'
 
-        // Criar cliente com a service_role key (tem permissões de admin)
         const supabaseAdmin = window.supabase.createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY, {
             auth: {
                 autoRefreshToken: false,
@@ -723,10 +972,11 @@
             }
         })
 
-        // Dados
         let users = []
+        let verificationRequests = []
         let currentAction = null
         let selectedUserId = null
+        let currentTab = 'users'
 
         function showToast(message) {
             const toast = document.getElementById('toast')
@@ -735,34 +985,38 @@
             setTimeout(() => toast.classList.remove('show'), 3000)
         }
 
-        // Função para buscar todos os usuários do Auth
+        // Tabs
+        window.switchTab = function(tab) {
+            currentTab = tab
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'))
+            document.querySelectorAll('.tab')[tab === 'users' ? 0 : tab === 'verification' ? 1 : 2].classList.add('active')
+            
+            document.getElementById('usersTab').style.display = tab === 'users' ? 'block' : 'none'
+            document.getElementById('verificationTab').style.display = tab === 'verification' ? 'block' : 'none'
+            document.getElementById('verifiedTab').style.display = tab === 'verified' ? 'block' : 'none'
+            
+            if (tab === 'verification') loadVerificationRequests()
+            if (tab === 'verified') loadVerifiedSellers()
+        }
+
+        // Carregar usuários
         async function loadUsers() {
             try {
-                // Buscar todos os usuários do auth usando service_role
                 const { data: { users: authUsers }, error: authError } = await supabaseAdmin.auth.admin.listUsers()
                 
-                if (authError) {
-                    console.error('Erro ao carregar auth users:', authError)
-                    showToast('Erro ao carregar usuários: ' + authError.message)
-                    return
-                }
+                if (authError) throw authError
 
-                // Buscar perfis da tabela vendedores
                 const { data: vendedores, error: vendedoresError } = await supabaseAdmin
                     .from('vendedores')
                     .select('*')
 
-                if (vendedoresError) {
-                    console.error('Erro ao carregar vendedores:', vendedoresError)
-                }
+                if (vendedoresError) throw vendedoresError
 
-                // Criar mapa de vendedores por id
                 const vendedoresMap = {}
                 vendedores?.forEach(v => {
                     vendedoresMap[v.id] = v
                 })
 
-                // Combinar dados
                 users = authUsers?.map(authUser => {
                     const vendedor = vendedoresMap[authUser.id] || {}
                     return {
@@ -770,6 +1024,10 @@
                         nome: vendedor.nome || authUser.user_metadata?.name || authUser.email?.split('@')[0] || 'Sem nome',
                         email: authUser.email || 'sem-email@exemplo.com',
                         whatsapp: vendedor.whatsapp || authUser.user_metadata?.whatsapp || 'Não informado',
+                        verified: vendedor.verified || false,
+                        verification_requested: vendedor.verification_requested || false,
+                        vendas: vendedor.vendas || 0,
+                        avaliacao: vendedor.avaliacao || 0,
                         senha: '********',
                         descricao: vendedor.descricao || '',
                         foto_url: vendedor.foto_url || null,
@@ -779,7 +1037,6 @@
                     }
                 }) || []
 
-                console.log('Usuários carregados:', users.length)
                 updateStats()
                 renderUsers()
             } catch (error) {
@@ -793,6 +1050,8 @@
             document.getElementById('activeUsers').textContent = users.filter(u => u.status === 'active').length
             document.getElementById('suspendedUsers').textContent = users.filter(u => u.status === 'suspended').length
             document.getElementById('bannedUsers').textContent = users.filter(u => u.status === 'banned').length
+            document.getElementById('pendingRequests').textContent = users.filter(u => u.verification_requested && !u.verified).length
+            document.getElementById('verifiedCount').textContent = users.filter(u => u.verified).length
         }
 
         function renderUsers() {
@@ -841,6 +1100,13 @@
                     </div>
                     <div class="user-info">
                         <h4>${user.nome}</h4>
+                        ${user.verified ? `
+                            <span class="verified-badge" title="Verificado">
+                                <svg viewBox="0 0 24 24">
+                                    <polyline points="20 6 9 17 4 12"/>
+                                </svg>
+                            </span>
+                        ` : ''}
                         <p>ID: ${user.id.slice(0, 8)}</p>
                     </div>
                     <div class="user-email">${user.email}</div>
@@ -871,6 +1137,11 @@
                                 <svg viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
                             </a>
                         ` : ''}
+                        ${!user.verified && user.status === 'active' ? `
+                            <button class="action-btn verify" onclick="openVerifyModal('${user.id}')" title="Conceder verificação">
+                                <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                            </button>
+                        ` : ''}
                         ${user.status === 'active' ? `
                             <button class="action-btn suspend" onclick="openSuspendModal('${user.id}')" title="Suspender">
                                 <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
@@ -895,51 +1166,127 @@
             `}).join('')
         }
 
-        window.filterUsers = function() {
-            renderUsers()
-        }
-
-        window.togglePassword = function(userId, senha) {
-            const span = document.getElementById(`pass-${userId}`)
-            if (span.textContent === '********') {
-                span.textContent = senha
-            } else {
-                span.textContent = '********'
-            }
-        }
-
-        window.viewUser = function(userId) {
-            const user = users.find(u => u.id === userId)
-            if (!user) return
-
-            document.getElementById('viewUserName').textContent = user.nome
-            document.getElementById('viewUserEmail').textContent = user.email
-            document.getElementById('viewUserWhatsappText').textContent = user.whatsapp || 'Não informado'
-            document.getElementById('viewUserDesc').textContent = user.descricao || 'Sem descrição'
-            document.getElementById('viewUserLink').textContent = user.link_hash ? 
-                `https://keygram.vercel.app/chat.html?hash=${user.link_hash}` : 'Nenhum link gerado'
+        // Carregar pedidos de verificação
+        async function loadVerificationRequests() {
+            const requests = users.filter(u => u.verification_requested && !u.verified)
+            const list = document.getElementById('verificationRequestsList')
             
-            let statusText = user.status === 'active' ? 'Ativo' : 
-                            user.status === 'suspended' ? 'Suspenso' : 'Banido'
-            let statusClass = user.status === 'active' ? 'status-active' : 
-                             user.status === 'suspended' ? 'status-suspended' : 'status-banned'
-            
-            document.getElementById('viewUserStatus').textContent = statusText
-            document.getElementById('viewUserStatus').className = `user-status ${statusClass}`
-            
-            const avatar = document.getElementById('viewUserAvatar')
-            if (user.foto_url) {
-                avatar.src = user.foto_url
-                avatar.style.display = 'block'
-            } else {
-                avatar.style.display = 'none'
+            if (requests.length === 0) {
+                list.innerHTML = `
+                    <div style="padding: 60px; text-align: center; color: #8e8e93;">
+                        <svg viewBox="0 0 24 24" width="48" height="48" style="stroke: #8e8e93; margin-bottom: 16px;">
+                            <circle cx="12" cy="12" r="10"/>
+                            <line x1="12" y1="8" x2="12" y2="12"/>
+                            <circle cx="12" cy="16" r="0.5" fill="currentColor"/>
+                        </svg>
+                        <p>Nenhum pedido de verificação pendente</p>
+                    </div>
+                `
+                return
             }
 
-            document.getElementById('viewModal').classList.add('active')
+            list.innerHTML = requests.map(user => `
+                <div class="request-item">
+                    <div class="request-user">
+                        <img src="${user.foto_url || 'https://via.placeholder.com/48'}" alt="Avatar">
+                        <div class="request-info">
+                            <h4>${user.nome}</h4>
+                            <p>${user.email}</p>
+                        </div>
+                    </div>
+                    <div class="request-stats">
+                        <div class="stat">
+                            <div class="stat-value">${user.vendas || 0}</div>
+                            <div class="stat-label">Vendas</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value">${user.avaliacao || 0}</div>
+                            <div class="stat-label">Avaliação</div>
+                        </div>
+                    </div>
+                    <div class="request-actions">
+                        <button class="btn btn-verify" onclick="approveVerification('${user.id}')">Aprovar</button>
+                        <button class="btn btn-outline" onclick="rejectVerification('${user.id}')">Rejeitar</button>
+                    </div>
+                </div>
+            `).join('')
         }
 
-        window.closeViewModal = function() {
-            document.getElementById('viewModal').classList.remove('active')
+        // Carregar vendedores verificados
+        async function loadVerifiedSellers() {
+            const verified = users.filter(u => u.verified)
+            const list = document.getElementById('verifiedSellersList')
+            
+            if (verified.length === 0) {
+                list.innerHTML = `
+                    <div style="padding: 60px; text-align: center; color: #8e8e93;">
+                        <svg viewBox="0 0 24 24" width="48" height="48" style="stroke: #8e8e93; margin-bottom: 16px;">
+                            <circle cx="12" cy="12" r="10"/>
+                            <line x1="12" y1="8" x2="12" y2="12"/>
+                            <circle cx="12" cy="16" r="0.5" fill="currentColor"/>
+                        </svg>
+                        <p>Nenhum vendedor verificado</p>
+                    </div>
+                `
+                return
+            }
+
+            list.innerHTML = verified.map(user => `
+                <div class="request-item">
+                    <div class="request-user">
+                        <img src="${user.foto_url || 'https://via.placeholder.com/48'}" alt="Avatar">
+                        <div class="request-info">
+                            <h4>${user.nome} <span class="verified-badge" style="display: inline-flex;">✓</span></h4>
+                            <p>${user.email}</p>
+                        </div>
+                    </div>
+                    <div class="request-stats">
+                        <div class="stat">
+                            <div class="stat-value">${user.vendas || 0}</div>
+                            <div class="stat-label">Vendas</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value">${user.avaliacao || 0}</div>
+                            <div class="stat-label">Avaliação</div>
+                        </div>
+                    </div>
+                    <div class="request-actions">
+                        <button class="btn btn-outline" onclick="revokeVerification('${user.id}')">Remover selo</button>
+                    </div>
+                </div>
+            `).join('')
+        }
+
+        // Ações de verificação
+        window.openVerifyModal = function(userId) {
+            selectedUserId = userId
+            currentAction = 'verify'
+            document.getElementById('modalTitle').textContent = 'Conceder verificação'
+            document.getElementById('modalMessage').textContent = 'Tem certeza que deseja conceder o selo de verificado para este usuário?'
+            document.getElementById('confirmAction').className = 'btn btn-verify'
+            document.getElementById('confirmAction').textContent = 'Verificar'
+            document.getElementById('confirmModal').classList.add('active')
+        }
+
+        window.approveVerification = async function(userId) {
+            selectedUserId = userId
+            currentAction = 'verify'
+            await executeAction()
+            loadVerificationRequests()
+        }
+
+        window.rejectVerification = async function(userId) {
+            selectedUserId = userId
+            currentAction = 'reject'
+            await executeAction()
+            loadVerificationRequests()
+        }
+
+        window.revokeVerification = async function(userId) {
+            selectedUserId = userId
+            currentAction = 'revoke'
+            await executeAction()
+            loadVerifiedSellers()
         }
 
         // Ações de moderação
@@ -982,42 +1329,104 @@
         window.executeAction = async function() {
             if (!selectedUserId || !currentAction) return
 
-            let newStatus = ''
+            let updateData = {}
             let message = ''
 
             switch(currentAction) {
+                case 'verify':
+                    updateData = { verified: true, verification_requested: false }
+                    message = 'Selo de verificado concedido!'
+                    break
+                case 'reject':
+                    updateData = { verification_requested: false }
+                    message = 'Pedido de verificação rejeitado'
+                    break
+                case 'revoke':
+                    updateData = { verified: false }
+                    message = 'Selo de verificado removido'
+                    break
                 case 'suspend':
-                    newStatus = 'suspended'
+                    updateData = { status: 'suspended' }
                     message = 'Usuário suspenso com sucesso'
                     break
                 case 'ban':
-                    newStatus = 'banned'
+                    updateData = { status: 'banned' }
                     message = 'Usuário banido com sucesso'
                     break
                 case 'reactivate':
-                    newStatus = 'active'
+                    updateData = { status: 'active' }
                     message = 'Usuário reativado com sucesso'
                     break
             }
 
             try {
-                // Atualizar status no banco
                 const { error } = await supabaseAdmin
                     .from('vendedores')
-                    .update({ status: newStatus })
+                    .update(updateData)
                     .eq('id', selectedUserId)
 
-                if (error) {
-                    showToast('Erro ao executar ação: ' + error.message)
-                } else {
-                    showToast(message)
-                    await loadUsers() // Recarregar lista
-                }
+                if (error) throw error
+
+                showToast(message)
+                await loadUsers()
+                
+                if (currentTab === 'verification') loadVerificationRequests()
+                if (currentTab === 'verified') loadVerifiedSellers()
+                
             } catch (error) {
-                showToast('Erro ao executar ação')
+                showToast('Erro: ' + error.message)
             }
 
             closeModal()
+        }
+
+        window.filterUsers = function() {
+            renderUsers()
+        }
+
+        window.togglePassword = function(userId, senha) {
+            const span = document.getElementById(`pass-${userId}`)
+            if (span.textContent === '********') {
+                span.textContent = senha
+            } else {
+                span.textContent = '********'
+            }
+        }
+
+        window.viewUser = function(userId) {
+            const user = users.find(u => u.id === userId)
+            if (!user) return
+
+            document.getElementById('viewUserName').innerHTML = `${user.nome} ${user.verified ? '<span class="verified-badge" style="display: inline-flex;">✓</span>' : ''}`
+            document.getElementById('viewUserEmail').textContent = user.email
+            document.getElementById('viewUserWhatsappText').textContent = user.whatsapp || 'Não informado'
+            document.getElementById('viewUserDesc').textContent = user.descricao || 'Sem descrição'
+            document.getElementById('viewUserLink').textContent = user.link_hash ? 
+                `https://keygram.vercel.app/chat.html?hash=${user.link_hash}` : 'Nenhum link gerado'
+            document.getElementById('viewUserVendas').textContent = user.vendas || 0
+            document.getElementById('viewUserAvaliacao').textContent = user.avaliacao || '0.0'
+            
+            let statusText = user.status === 'active' ? 'Ativo' : 
+                            user.status === 'suspended' ? 'Suspenso' : 'Banido'
+            let statusClass = user.status === 'active' ? 'status-active' : 
+                             user.status === 'suspended' ? 'status-suspended' : 'status-banned'
+            
+            document.getElementById('viewUserStatus').textContent = statusText
+            document.getElementById('viewUserStatus').className = `user-status ${statusClass}`
+            
+            const avatar = document.getElementById('viewUserAvatar')
+            if (user.foto_url) {
+                avatar.src = user.foto_url
+                avatar.style.display = 'block'
+            } else {
+                avatar.style.display = 'none'
+            }
+
+            document.getElementById('viewModal').classList.add('active')
+        }
+
+        window.closeViewModal = function() {
+            document.getElementById('viewModal').classList.remove('active')
         }
 
         window.handleLogout = async function() {
@@ -1033,4 +1442,4 @@
         init()
     </script>
 </body>
-                        </html>
+                            </html>
