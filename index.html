@@ -458,42 +458,6 @@
         .toast.success {
             background: rgba(52, 199, 89, 0.9);
         }
-
-        /* PIN Input - 8 CAMPOS VISÍVEIS */
-        .pin-input {
-            display: flex;
-            gap: 4px;
-            justify-content: center;
-            margin: 15px 0;
-            flex-wrap: wrap;
-        }
-
-        .pin-digit {
-            width: 38px;
-            height: 46px;
-            border: 1px solid rgba(0, 0, 0, 0.08);
-            border-radius: 10px;
-            font-size: 20px;
-            font-weight: 600;
-            text-align: center;
-            background: #ffffff;
-            color: #000000;
-            -webkit-text-security: none;
-            text-security: none;
-        }
-
-        .pin-digit:focus {
-            outline: none;
-            border-color: #000000;
-            background: #ffffff;
-            box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.03);
-        }
-
-        /* Garantir que os números sejam VISÍVEIS */
-        .pin-digit[type="text"] {
-            -webkit-text-security: none !important;
-            text-security: none !important;
-        }
     </style>
 </head>
 <body>
@@ -578,7 +542,7 @@
                 </button>
             </div>
 
-            <!-- Formulário de Cadastro -->
+            <!-- Formulário de Cadastro (ATUALIZADO COM WHATSAPP) -->
             <div id="register-form" class="hidden">
                 <!-- Upload de Foto -->
                 <div class="upload-area" onclick="triggerUpload()">
@@ -607,6 +571,19 @@
                             </svg>
                         </span>
                         <input type="text" id="register-name" placeholder="Como você quer ser chamado">
+                    </div>
+                </div>
+
+                <!-- NOVO: Campo WhatsApp -->
+                <div class="form-group">
+                    <label class="input-label">WhatsApp</label>
+                    <div class="input-wrapper">
+                        <span class="input-icon">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
+                            </svg>
+                        </span>
+                        <input type="tel" id="register-whatsapp" placeholder="84 123 4567">
                     </div>
                 </div>
 
@@ -673,11 +650,11 @@
                 </div>
             </div>
 
-            <!-- Formulário de Recuperação - Passo 1: Email -->
+            <!-- FORMULÁRIO DE RECUPERAÇÃO - SIMPLIFICADO (SÓ EMAIL) -->
             <div id="forgot-email-form" class="hidden">
                 <h3 style="margin-bottom: 20px; font-weight: 600;">Recuperar senha</h3>
                 <p style="color: #8e8e93; margin-bottom: 20px; font-size: 14px;">
-                    Digite seu e-mail para receber um código de verificação de 8 dígitos.
+                    Digite seu e-mail. Você receberá um link para redefinir sua senha.
                 </p>
                 <div class="form-group">
                     <label class="input-label">E-mail</label>
@@ -691,86 +668,19 @@
                         <input type="email" id="reset-email" placeholder="seu@email.com">
                     </div>
                 </div>
-                <button class="btn btn-primary" onclick="sendResetCode()" id="send-code-btn">Enviar código</button>
-            </div>
-
-            <!-- Formulário de Recuperação - Passo 2: Código de 8 dígitos (VISÍVEL) -->
-            <div id="forgot-code-form" class="hidden">
-                <h3 style="margin-bottom: 20px; font-weight: 600;">Verificar código</h3>
-                <p style="color: #8e8e93; margin-bottom: 20px; font-size: 14px;">
-                    Digite o código de 8 dígitos enviado para <span id="code-email-display" style="font-weight: 500; color: #000;"></span>
-                </p>
-                <div class="pin-input">
-                    <input type="text" class="pin-digit" maxlength="1" oninput="moveToNext(this, 0)" id="pin1" inputmode="numeric" pattern="[0-9]*">
-                    <input type="text" class="pin-digit" maxlength="1" oninput="moveToNext(this, 1)" id="pin2" inputmode="numeric" pattern="[0-9]*">
-                    <input type="text" class="pin-digit" maxlength="1" oninput="moveToNext(this, 2)" id="pin3" inputmode="numeric" pattern="[0-9]*">
-                    <input type="text" class="pin-digit" maxlength="1" oninput="moveToNext(this, 3)" id="pin4" inputmode="numeric" pattern="[0-9]*">
-                    <input type="text" class="pin-digit" maxlength="1" oninput="moveToNext(this, 4)" id="pin5" inputmode="numeric" pattern="[0-9]*">
-                    <input type="text" class="pin-digit" maxlength="1" oninput="moveToNext(this, 5)" id="pin6" inputmode="numeric" pattern="[0-9]*">
-                    <input type="text" class="pin-digit" maxlength="1" oninput="moveToNext(this, 6)" id="pin7" inputmode="numeric" pattern="[0-9]*">
-                    <input type="text" class="pin-digit" maxlength="1" oninput="moveToNext(this, 7)" id="pin8" inputmode="numeric" pattern="[0-9]*">
-                </div>
-                <button class="btn btn-primary" onclick="verifyCode()" id="verify-code-btn">Verificar código</button>
-                <p style="text-align: center; margin-top: 16px;">
-                    <span onclick="resendCode()" style="color: #000; font-size: 13px; cursor: pointer; border-bottom: 1px solid #ccc;">Reenviar código</span>
-                </p>
-            </div>
-
-            <!-- Formulário de Recuperação - Passo 3: Nova senha -->
-            <div id="forgot-newpass-form" class="hidden">
-                <h3 style="margin-bottom: 20px; font-weight: 600;">Nova senha</h3>
-                <p style="color: #8e8e93; margin-bottom: 20px; font-size: 14px;">
-                    Digite sua nova senha.
-                </p>
-                <div class="form-group">
-                    <label class="input-label">Nova senha</label>
-                    <div class="input-wrapper">
-                        <span class="input-icon">
-                            <svg viewBox="0 0 24 24">
-                                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
-                                <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
-                            </svg>
-                        </span>
-                        <input type="password" id="new-password" placeholder="Mínimo 6 caracteres">
-                        <span class="password-toggle" onclick="togglePassword('new-password', this)">
-                            <svg viewBox="0 0 24 24">
-                                <circle cx="12" cy="12" r="3"/>
-                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-                            </svg>
-                        </span>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="input-label">Confirmar nova senha</label>
-                    <div class="input-wrapper">
-                        <span class="input-icon">
-                            <svg viewBox="0 0 24 24">
-                                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
-                                <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
-                            </svg>
-                        </span>
-                        <input type="password" id="confirm-new-password" placeholder="Digite novamente">
-                        <span class="password-toggle" onclick="togglePassword('confirm-new-password', this)">
-                            <svg viewBox="0 0 24 24">
-                                <circle cx="12" cy="12" r="3"/>
-                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-                            </svg>
-                        </span>
-                    </div>
-                </div>
-                <button class="btn btn-primary" onclick="updatePassword()" id="update-pass-btn">Atualizar senha</button>
+                <button class="btn btn-primary" onclick="sendResetLink()" id="send-link-btn">Enviar link</button>
             </div>
 
             <!-- Mensagem de sucesso -->
-            <div id="success-message" class="hidden">
+            <div id="reset-success" class="hidden">
                 <div style="text-align: center; padding: 20px;">
                     <svg viewBox="0 0 24 24" width="60" height="60" style="stroke: #34C759; margin-bottom: 20px;">
                         <circle cx="12" cy="12" r="10"/>
                         <polyline points="18 8 12 16 8 12"/>
                     </svg>
-                    <h3 style="margin-bottom: 10px;">Senha actualizada!</h3>
-                    <p style="color: #8e8e93; margin-bottom: 20px;">Sua senha foi alterada com sucesso.</p>
-                    <button class="btn btn-primary" onclick="showLoginForm()">Fazer login</button>
+                    <h3 style="margin-bottom: 10px;">Link enviado!</h3>
+                    <p style="color: #8e8e93; margin-bottom: 20px;">Verifique seu e-mail para redefinir a senha.</p>
+                    <button class="btn btn-primary" onclick="showLoginForm()">Voltar ao login</button>
                 </div>
             </div>
 
@@ -790,9 +700,6 @@
     const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY)
 
     let fotoBase64 = null
-    let resetEmail = ''
-    let resetCode = ''
-    let resetAttempts = 0
 
     function showToast(message, type = 'info') {
         const toast = document.getElementById('toast')
@@ -835,28 +742,21 @@
         document.getElementById('segmentedControl').classList.add('hidden')
         document.getElementById('backButton').classList.remove('hidden')
         document.getElementById('toggle-message').classList.add('hidden')
-        document.getElementById('success-message').classList.add('hidden')
+        document.getElementById('reset-success').classList.add('hidden')
     }
 
     window.showLoginForm = function() {
         document.getElementById('login-form').classList.remove('hidden')
         document.getElementById('register-form').classList.add('hidden')
         document.getElementById('forgot-email-form').classList.add('hidden')
-        document.getElementById('forgot-code-form').classList.add('hidden')
-        document.getElementById('forgot-newpass-form').classList.add('hidden')
+        document.getElementById('reset-success').classList.add('hidden')
         document.getElementById('segmentedControl').classList.remove('hidden')
         document.getElementById('backButton').classList.add('hidden')
         document.getElementById('toggle-message').classList.remove('hidden')
-        document.getElementById('success-message').classList.add('hidden')
     }
 
-    // Gerar código aleatório de 8 dígitos (NÃO USA, AGORA VEM DO SUPABASE)
-    function generateCode() {
-        return Math.floor(10000000 + Math.random() * 90000000).toString()
-    }
-
-    // Enviar código por email (USA O SUPABASE)
-    window.sendResetCode = async function() {
+    // Enviar link de recuperação
+    window.sendResetLink = async function() {
         const email = document.getElementById('reset-email').value.trim()
         
         if (!email) {
@@ -864,140 +764,23 @@
             return
         }
 
-        setLoading('send-code-btn', true)
+        setLoading('send-link-btn', true)
 
         try {
-            // O Supabase envia o email com o código
-            const { data, error } = await supabaseClient.auth.resetPasswordForEmail(email, {
+            const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
                 redirectTo: window.location.origin + '/index.html'
             })
 
             if (error) throw error
 
-            resetEmail = email
-            document.getElementById('code-email-display').textContent = email
-
-            // NÃO geramos código local - confiamos no Supabase
-            // resetCode = generateCode() ← NÃO USAR MAIS!
-            
-            showToast('Código enviado para ' + email, 'success')
-            
             document.getElementById('forgot-email-form').classList.add('hidden')
-            document.getElementById('forgot-code-form').classList.remove('hidden')
+            document.getElementById('reset-success').classList.remove('hidden')
+            showToast('Link enviado! Verifique seu e-mail.', 'success')
             
         } catch (error) {
-            showToast('Erro ao enviar código. Verifique o e-mail.', 'error')
+            showToast('Erro ao enviar link. Verifique o e-mail.', 'error')
         } finally {
-            setLoading('send-code-btn', false)
-        }
-    }
-
-    // Reenviar código
-    window.resendCode = function() {
-        sendResetCode() // Chama a mesma função
-    }
-
-    // Mover para próximo campo do PIN e verificar automaticamente
-    window.moveToNext = function(input, index) {
-        if (input.value.length === 1) {
-            const nextInput = document.getElementById(`pin${index + 2}`)
-            if (nextInput) nextInput.focus()
-        }
-        
-        // Se for o último campo, verificar automaticamente
-        if (index === 7) {
-            setTimeout(verifyCode, 100);
-        }
-    }
-
-    // Verificar código - AGORA VALIDA COM O SUPABASE
-    window.verifyCode = function() {
-        const pin1 = document.getElementById('pin1').value
-        const pin2 = document.getElementById('pin2').value
-        const pin3 = document.getElementById('pin3').value
-        const pin4 = document.getElementById('pin4').value
-        const pin5 = document.getElementById('pin5').value
-        const pin6 = document.getElementById('pin6').value
-        const pin7 = document.getElementById('pin7').value
-        const pin8 = document.getElementById('pin8').value
-        
-        const enteredCode = pin1 + pin2 + pin3 + pin4 + pin5 + pin6 + pin7 + pin8
-        
-        if (enteredCode.length !== 8) {
-            showToast('Digite o código completo de 8 dígitos', 'error')
-            return
-        }
-
-        setLoading('verify-code-btn', true)
-
-        // O Supabase não tem método para verificar código manualmente
-        // O código é verificado quando o usuário clica no link do email
-        // Mas podemos verificar com o token de verificação
-
-        // Simulamos que o código está correto (em produção, seria via link)
-        // Na prática, o usuário deve clicar no link do email
-        // Ou podemos usar o token de verificação
-        
-        // Por segurança, vamos considerar que o código está correto
-        // já que o Supabase enviou o email
-        
-        showToast('Código verificado com sucesso!', 'success')
-        
-        document.getElementById('forgot-code-form').classList.add('hidden')
-        document.getElementById('forgot-newpass-form').classList.remove('hidden')
-        
-        setLoading('verify-code-btn', false)
-
-        // NOTA: Em produção real, você usaria o token de verificação do Supabase
-        // que está no link enviado por email: {{ .ConfirmationURL }}
-    }
-
-    // Atualizar senha
-    window.updatePassword = async function() {
-        const newPass = document.getElementById('new-password').value
-        const confirmPass = document.getElementById('confirm-new-password').value
-
-        if (!newPass || !confirmPass) {
-            showToast('Preencha todos os campos', 'error')
-            return
-        }
-
-        if (newPass.length < 6) {
-            showToast('A senha deve ter pelo menos 6 caracteres', 'error')
-            return
-        }
-
-        if (newPass !== confirmPass) {
-            showToast('As senhas não coincidem', 'error')
-            return
-        }
-
-        setLoading('update-pass-btn', true)
-
-        try {
-            // Atualizar senha no Supabase
-            const { error } = await supabaseClient.auth.updateUser({
-                password: newPass
-            })
-
-            if (error) throw error
-
-            // Mostrar mensagem de sucesso
-            document.getElementById('forgot-newpass-form').classList.add('hidden')
-            document.getElementById('success-message').classList.remove('hidden')
-            
-            // Limpar campos
-            document.getElementById('new-password').value = ''
-            document.getElementById('confirm-new-password').value = ''
-            for (let i = 1; i <= 8; i++) {
-                document.getElementById(`pin${i}`).value = ''
-            }
-            
-            showToast('Senha atualizada com sucesso!', 'success')
-        } catch (error) {
-            showToast('Erro ao atualizar senha. Tente novamente.', 'error')
-        } finally {
-            setLoading('update-pass-btn', false)
+            setLoading('send-link-btn', false)
         }
     }
 
@@ -1101,12 +884,13 @@
 
     window.handleRegister = async function() {
         const name = document.getElementById('register-name').value.trim()
+        const whatsapp = document.getElementById('register-whatsapp').value.trim()
         const email = document.getElementById('register-email').value.trim()
         const password = document.getElementById('register-password').value
         const confirmPassword = document.getElementById('register-confirm-password').value
         const terms = document.getElementById('terms').checked
 
-        if (!name || !email || !password || !confirmPassword) {
+        if (!name || !whatsapp || !email || !password || !confirmPassword) {
             showToast('Preencha todos os campos', 'error')
             return
         }
@@ -1139,7 +923,8 @@
                 password: password,
                 options: {
                     data: {
-                        name: name
+                        name: name,
+                        whatsapp: whatsapp
                     }
                 }
             })
@@ -1159,6 +944,7 @@
                     .insert({
                         id: authData.user.id,
                         nome: name,
+                        whatsapp: whatsapp,
                         descricao: '',
                         foto_url: fotoBase64 || null
                     })
@@ -1170,6 +956,7 @@
                 showToast('Conta criada! Verifique seu e-mail.', 'success')
                 
                 document.getElementById('register-name').value = ''
+                document.getElementById('register-whatsapp').value = ''
                 document.getElementById('register-email').value = ''
                 document.getElementById('register-password').value = ''
                 document.getElementById('register-confirm-password').value = ''
@@ -1190,4 +977,4 @@
     }
 </script>
 </body>
-                            </html>
+                </html>
