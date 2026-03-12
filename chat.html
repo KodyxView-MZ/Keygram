@@ -84,6 +84,7 @@
             gap: 6px;
         }
 
+        /* NOVO: Estilo para selo de verificado */
         .verified-badge {
             display: inline-flex;
             align-items: center;
@@ -264,34 +265,6 @@
             outline: none;
         }
 
-        /* NOVO: Botão de anexo */
-        .attach-button {
-            width: 44px;
-            height: 44px;
-            border: none;
-            background: transparent;
-            color: #8e8e93;
-            border-radius: 22px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.2s;
-            flex-shrink: 0;
-        }
-
-        .attach-button:hover {
-            background: rgba(0, 0, 0, 0.05);
-            color: #000000;
-        }
-
-        .attach-button svg {
-            width: 22px;
-            height: 22px;
-            stroke: currentColor;
-            stroke-width: 1.8;
-        }
-
         .send-button {
             width: 44px;
             height: 44px;
@@ -405,11 +378,6 @@
             cursor: pointer;
             color: white;
         }
-
-        /* Input de arquivo escondido */
-        #fileInput {
-            display: none;
-        }
     </style>
 </head>
 <body>
@@ -440,13 +408,6 @@
 
         <!-- Input Area -->
         <div class="input-area">
-            <!-- NOVO: Botão de anexo -->
-            <button class="attach-button" onclick="triggerFileUpload()" id="attachButton">
-                <svg viewBox="0 0 24 24">
-                    <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/>
-                </svg>
-            </button>
-            <input type="file" id="fileInput" accept="image/*" onchange="handleImageUpload(event)">
             <div class="input-wrapper">
                 <input type="text" id="messageInput" placeholder="Digite sua mensagem..." autocomplete="off">
             </div>
@@ -488,126 +449,7 @@
 
         let conversaId = null
         let vendedorId = null
-        let vendedorNome = ''
-        let notificacaoPermitida = false
         const leadId = 'lead_' + Math.random().toString(36).substring(2, 15)
-
-        // ========== FUNÇÕES DE NOTIFICAÇÃO ==========
-        async function solicitarPermissaoNotificacao() {
-            if (!('Notification' in window)) {
-                console.log('Este navegador não suporta notificações')
-                return false
-            }
-
-            if (Notification.permission === 'granted') {
-                notificacaoPermitida = true
-                return true
-            }
-
-            if (Notification.permission !== 'denied') {
-                const permission = await Notification.requestPermission()
-                notificacaoPermitida = permission === 'granted'
-                return notificacaoPermitida
-            }
-
-            return false
-        }
-
-        function mostrarNotificacao(titulo, corpo, icone) {
-            if (!notificacaoPermitida) return
-
-            // Não mostrar notificação se a aba estiver ativa
-            if (document.hasFocus()) return
-
-            const notification = new Notification(titulo, {
-                body: corpo,
-                icon: icone || '/icon.png',
-                badge: '/icon.png',
-                vibrate: [200, 100, 200]
-            })
-
-            notification.onclick = function() {
-                window.focus()
-                this.close()
-            }
-
-            // Fechar automaticamente após 5 segundos
-            setTimeout(() => notification.close(), 5000)
-        }
-
-        // ========== FUNÇÕES DE UPLOAD ==========
-        async function uploadImage(file) {
-            const fileExt = file.name.split('.').pop()
-            const fileName = `${conversaId}_${Date.now()}.${fileExt}`
-            const filePath = `chat_images/${fileName}`
-
-            console.log('📤 Enviando imagem:', { filePath, size: file.size })
-
-            const { error } = await supabaseClient.storage
-                .from('keygram')
-                .upload(filePath, file)
-
-            if (error) {
-                console.error('❌ Erro no upload:', error)
-                throw error
-            }
-
-            const { data: { publicUrl } } = supabaseClient.storage
-                .from('keygram')
-                .getPublicUrl(filePath)
-
-            console.log('✅ Upload concluído, URL:', publicUrl)
-            return publicUrl
-        }
-
-        window.triggerFileUpload = function() {
-            document.getElementById('fileInput').click()
-        }
-
-        window.handleImageUpload = async function(event) {
-            const file = event.target.files[0]
-            if (!file) return
-
-            if (!file.type.match('image.*')) {
-                showToast('Apenas imagens são permitidas')
-                return
-            }
-
-            if (file.size > 5 * 1024 * 1024) {
-                showToast('Imagem deve ter no máximo 5MB')
-                return
-            }
-
-            const attachButton = document.getElementById('attachButton')
-            attachButton.disabled = true
-            showToast('Enviando imagem...')
-
-            try {
-                const imageUrl = await uploadImage(file)
-                await enviarMensagemImagem(imageUrl)
-                showToast('Imagem enviada!')
-            } catch (error) {
-                console.error('Erro ao enviar imagem:', error)
-                showToast('Erro ao enviar imagem')
-            } finally {
-                attachButton.disabled = false
-                event.target.value = ''
-            }
-        }
-
-        async function enviarMensagemImagem(imageUrl) {
-            const { error } = await supabaseClient
-                .from('mensagens')
-                .insert({
-                    conversa_id: conversaId,
-                    remetente: 'lead',
-                    conteudo: imageUrl
-                })
-
-            if (error) {
-                throw error
-            }
-        }
 
         function showToast(message) {
             const toast = document.getElementById('toast')
@@ -630,13 +472,16 @@
 
         // Função para formatar mensagem (suporta imagens)
         function formatMessage(msg) {
-            // Verificar se é imagem (URL do storage ou base64)
-            const isImage = msg.conteudo?.startsWith('http') && 
-                          (msg.conteudo.includes('.jpg') || msg.conteudo.includes('.png') || 
-                           msg.conteudo.includes('.jpeg') || msg.conteudo.includes('.gif') ||
-                           msg.conteudo.includes('.webp'));
+            // Verificar se é imagem base64
+            const isBase64Image = msg.conteudo?.startsWith('data:image');
             
-            if (isImage) {
+            // Verificar se é imagem URL
+            const isUrlImage = msg.conteudo?.startsWith('http') && 
+                              (msg.conteudo.includes('.jpg') || msg.conteudo.includes('.png') || 
+                               msg.conteudo.includes('.jpeg') || msg.conteudo.includes('.gif') ||
+                               msg.conteudo.includes('.webp'));
+            
+            if (isBase64Image || isUrlImage) {
                 // É imagem - mostra a imagem
                 return `<img src="${escapeHtml(msg.conteudo)}" class="message-image" onclick="openImageModal('${escapeHtml(msg.conteudo)}')">`;
             } else {
@@ -645,7 +490,7 @@
             }
         }
 
-        // Função para registrar visita
+        // 🔥 NOVA FUNÇÃO: Registrar visita
         async function registrarVisita(vendedorId) {
             try {
                 await supabaseClient
@@ -674,16 +519,12 @@
                 return
             }
 
-            vendedorId = vendedor.uid
-            vendedorNome = vendedor.nome || 'Vendedor'
+            vendedorId = vendedor.id
             
-            // Registrar visita
-            await registrarVisita(vendedor.uid)
+            // 🔥 REGISTRAR VISITA
+            await registrarVisita(vendedor.id)
             
-            // Solicitar permissão de notificação
-            await solicitarPermissaoNotificacao()
-            
-            // Mostrar nome com selo se for verificado
+            // MOSTRAR NOME COM SELO SE FOR VERIFICADO
             const nomeSpan = document.getElementById('vendorName')
             if (vendedor.verified) {
                 nomeSpan.innerHTML = `${escapeHtml(vendedor.nome || 'Vendedor')} 
@@ -702,7 +543,7 @@
             }
 
             // Criar ou pegar conversa
-            await getOrCreateConversa(vendedor.uid)
+            await getOrCreateConversa(vendedor.id)
         }
 
         async function getOrCreateConversa(vendedorId) {
@@ -712,11 +553,11 @@
                 .select('*')
                 .eq('vendedor_id', vendedorId)
                 .eq('lead_id', leadId)
-                .maybeSingle()
+                .single()
 
             if (!conversa) {
                 // Cria nova conversa
-                const { data: nova, error } = await supabaseClient
+                const { data: nova } = await supabaseClient
                     .from('conversas')
                     .insert({
                         vendedor_id: vendedorId,
@@ -725,12 +566,6 @@
                     })
                     .select()
                     .single()
-                
-                if (error) {
-                    console.error('Erro ao criar conversa:', error)
-                    showToast('Erro ao iniciar conversa')
-                    return
-                }
                 conversa = nova
             }
 
@@ -801,18 +636,6 @@
                         `
                         area.appendChild(msgDiv)
                         area.scrollTop = area.scrollHeight
-
-                        // 🔥 NOTIFICAÇÃO: Se for mensagem do vendedor
-                        if (payload.new.remetente === 'vendor' && !document.hasFocus()) {
-                            const isImage = payload.new.conteudo?.startsWith('http');
-                            const mensagemPreview = isImage ? '📷 Enviou uma imagem' : payload.new.conteudo.substring(0, 50) + (payload.new.conteudo.length > 50 ? '...' : '');
-                            
-                            mostrarNotificacao(
-                                vendedorNome,
-                                mensagemPreview,
-                                document.getElementById('vendorAvatar').querySelector('img')?.src || null
-                            )
-                        }
                     }
                 )
                 .subscribe()
