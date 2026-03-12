@@ -508,6 +508,7 @@
         let vendedorNome = ''
         let vendedorFoto = null
         let notificacaoPermitida = false
+        let ultimaMensagemId = null
         
         let leadId = localStorage.getItem(`lead_${hash}`)
         if (!leadId) {
@@ -516,25 +517,34 @@
         }
         console.log('🎯 Lead ID persistente:', leadId)
 
-        function scrollParaFinal(force = false) {
+        // ========== FUNÇÃO DE SCROLL CORRIGIDA ==========
+        function scrollParaFinal(force = false, delay = 100) {
             const area = document.getElementById('messagesArea')
-            if (force) {
-                setTimeout(() => area.scrollTop = area.scrollHeight, 100)
-                return
-            }
-            const isNearBottom = area.scrollHeight - area.scrollTop - area.clientHeight < 100
-            if (isNearBottom) {
-                setTimeout(() => area.scrollTop = area.scrollHeight, 100)
-            }
+            
+            // Aguarda as mensagens serem renderizadas
+            setTimeout(() => {
+                if (force) {
+                    area.scrollTop = area.scrollHeight
+                    console.log('📜 Scroll forçado para o final')
+                    return
+                }
+                
+                const isNearBottom = area.scrollHeight - area.scrollTop - area.clientHeight < 150
+                if (isNearBottom) {
+                    area.scrollTop = area.scrollHeight
+                    console.log('📜 Scroll suave para o final')
+                }
+            }, delay)
         }
 
-        // ========== FUNÇÕES DE NOTIFICAÇÃO CORRIGIDAS ==========
+        // ========== FUNÇÕES DE NOTIFICAÇÃO MELHORADAS ==========
         async function solicitarPermissaoNotificacao() {
             const btn = document.getElementById('notificationPermission')
             
             if (!('Notification' in window)) {
                 console.log('❌ Este navegador não suporta notificações')
                 btn.style.display = 'none'
+                showToast('❌ Notificações não suportadas')
                 return false
             }
 
@@ -543,7 +553,7 @@
             if (Notification.permission === 'granted') {
                 notificacaoPermitida = true
                 btn.style.display = 'none'
-                showToast('✅ Notificações ativadas!')
+                showToast('✅ Notificações já estavam ativadas!')
                 console.log('✅ Notificações já estavam permitidas')
                 return true
             }
@@ -565,12 +575,13 @@
                         setTimeout(() => {
                             mostrarNotificacao(
                                 '🔔 KEYGRAM',
-                                'Notificações funcionando!',
+                                'Notificações funcionando! ✅',
                                 vendedorFoto || 'https://ygptfdflmrgennajulwt.supabase.co/storage/v1/object/public/keygram//icon-192.png'
                             )
                         }, 2000)
                     } else {
                         btn.style.display = 'none'
+                        showToast('❌ Notificações bloqueadas')
                         console.log('❌ Permissão negada pelo usuário')
                     }
                     return notificacaoPermitida
@@ -588,15 +599,20 @@
         function mostrarNotificacao(titulo, corpo, icone) {
             console.log('🔔 Tentando mostrar notificação:', { titulo, corpo, icone, permitida: notificacaoPermitida, permissao: Notification.permission })
             
+            // Verificar se já mostrou esta mensagem
+            if (ultimaMensagemId === corpo) {
+                console.log('⏭️ Mensagem já notificada, ignorando')
+                return
+            }
+            ultimaMensagemId = corpo
+            
             if (Notification.permission !== 'granted') {
                 console.log('❌ Notificação bloqueada - permissão:', Notification.permission)
                 return
             }
 
-            if (document.hasFocus()) {
-                console.log('📱 Aba ativa - não mostrando notificação')
-                return
-            }
+            // Mostrar toast também como fallback
+            showToast(`🔔 ${titulo}: ${corpo}`)
 
             try {
                 const notification = new Notification(titulo, {
@@ -629,7 +645,7 @@
             }
         }
 
-        // SOLICITAR PERMISSÃO AUTOMATICAMENTE AO CARREGAR
+        // Verificar permissão automaticamente
         setTimeout(() => {
             if ('Notification' in window) {
                 if (Notification.permission === 'default') {
@@ -858,7 +874,8 @@
                 </div>
             `).join('')
 
-            scrollParaFinal(true)
+            // Scroll para o final com delay maior para garantir renderização
+            scrollParaFinal(true, 300)
         }
 
         function subscribeToMessages() {
@@ -877,6 +894,7 @@
                         
                         const area = document.getElementById('messagesArea')
                         
+                        // Remove welcome message se existir
                         if (area.children.length === 1 && area.children[0].classList.contains('welcome-message')) {
                             area.innerHTML = ''
                         }
@@ -889,7 +907,10 @@
                         `
                         area.appendChild(msgDiv)
                         
-                        scrollParaFinal(false)
+                        // Scroll após adicionar a mensagem
+                        setTimeout(() => {
+                            scrollParaFinal(false)
+                        }, 100)
 
                         // NOTIFICAÇÃO: Se for mensagem do vendedor
                         if (payload.new.remetente === 'vendor') {
