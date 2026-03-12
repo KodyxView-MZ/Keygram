@@ -84,7 +84,6 @@
             gap: 6px;
         }
 
-        /* NOVO: Estilo para selo de verificado */
         .verified-badge {
             display: inline-flex;
             align-items: center;
@@ -265,6 +264,34 @@
             outline: none;
         }
 
+        /* NOVO: Botão de anexo */
+        .attach-button {
+            width: 44px;
+            height: 44px;
+            border: none;
+            background: transparent;
+            color: #8e8e93;
+            border-radius: 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            flex-shrink: 0;
+        }
+
+        .attach-button:hover {
+            background: rgba(0, 0, 0, 0.05);
+            color: #000000;
+        }
+
+        .attach-button svg {
+            width: 22px;
+            height: 22px;
+            stroke: currentColor;
+            stroke-width: 1.8;
+        }
+
         .send-button {
             width: 44px;
             height: 44px;
@@ -378,6 +405,32 @@
             cursor: pointer;
             color: white;
         }
+
+        /* Input de arquivo escondido */
+        #fileInput {
+            display: none;
+        }
+        
+        /* Botão de notificação */
+        .notification-permission {
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #000000;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 30px;
+            font-size: 14px;
+            z-index: 1000;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            display: none;
+        }
+        
+        .notification-permission.show {
+            display: block;
+        }
     </style>
 </head>
 <body>
@@ -408,6 +461,13 @@
 
         <!-- Input Area -->
         <div class="input-area">
+            <!-- NOVO: Botão de anexo -->
+            <button class="attach-button" onclick="triggerFileUpload()" id="attachButton">
+                <svg viewBox="0 0 24 24">
+                    <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/>
+                </svg>
+            </button>
+            <input type="file" id="fileInput" accept="image/*" onchange="handleImageUpload(event)">
             <div class="input-wrapper">
                 <input type="text" id="messageInput" placeholder="Digite sua mensagem..." autocomplete="off">
             </div>
@@ -418,6 +478,11 @@
                 </svg>
             </button>
         </div>
+    </div>
+
+    <!-- Botão de permissão de notificação -->
+    <div class="notification-permission" id="notificationPermission" onclick="solicitarPermissaoNotificacao()">
+        🔔 Ativar notificações
     </div>
 
     <!-- Modal de imagem -->
@@ -449,7 +514,158 @@
 
         let conversaId = null
         let vendedorId = null
-        const leadId = 'lead_' + Math.random().toString(36).substring(2, 15)
+        let vendedorNome = ''
+        let vendedorFoto = null
+        let notificacaoPermitida = false
+        
+        // ========== LEAD ID PERSISTENTE ==========
+        // Tenta pegar lead_id do localStorage ou cria um novo
+        let leadId = localStorage.getItem(`lead_${hash}`)
+        if (!leadId) {
+            leadId = 'lead_' + Math.random().toString(36).substring(2, 15) + Date.now().toString(36)
+            localStorage.setItem(`lead_${hash}`, leadId)
+        }
+        console.log('🎯 Lead ID persistente:', leadId)
+
+        // ========== FUNÇÕES DE NOTIFICAÇÃO ==========
+        async function solicitarPermissaoNotificacao() {
+            const btn = document.getElementById('notificationPermission')
+            
+            if (!('Notification' in window)) {
+                console.log('Este navegador não suporta notificações')
+                btn.style.display = 'none'
+                return false
+            }
+
+            if (Notification.permission === 'granted') {
+                notificacaoPermitida = true
+                btn.style.display = 'none'
+                showToast('✅ Notificações ativadas!')
+                return true
+            }
+
+            if (Notification.permission !== 'denied') {
+                const permission = await Notification.requestPermission()
+                notificacaoPermitida = permission === 'granted'
+                if (notificacaoPermitida) {
+                    btn.style.display = 'none'
+                    showToast('✅ Notificações ativadas!')
+                } else {
+                    btn.style.display = 'none'
+                }
+                return notificacaoPermitida
+            }
+
+            btn.style.display = 'none'
+            return false
+        }
+
+        function mostrarNotificacao(titulo, corpo, icone) {
+            if (!notificacaoPermitida) return
+
+            // Não mostrar notificação se a aba estiver ativa
+            if (document.hasFocus()) return
+
+            try {
+                const notification = new Notification(titulo, {
+                    body: corpo,
+                    icon: icone || '/icon.png',
+                    badge: '/icon.png',
+                    vibrate: [200, 100, 200]
+                })
+
+                notification.onclick = function() {
+                    window.focus()
+                    this.close()
+                }
+
+                // Fechar automaticamente após 5 segundos
+                setTimeout(() => notification.close(), 5000)
+            } catch (e) {
+                console.log('Erro ao mostrar notificação:', e)
+            }
+        }
+
+        // Mostrar botão de permissão se necessário
+        setTimeout(() => {
+            if (Notification.permission === 'default') {
+                document.getElementById('notificationPermission').classList.add('show')
+            }
+        }, 2000)
+
+        // ========== FUNÇÕES DE UPLOAD ==========
+        async function uploadImage(file) {
+            const fileExt = file.name.split('.').pop()
+            const fileName = `${conversaId}_${Date.now()}.${fileExt}`
+            const filePath = `chat_images/${fileName}`
+
+            console.log('📤 Enviando imagem:', { filePath, size: file.size })
+
+            const { error } = await supabaseClient.storage
+                .from('keygram')
+                .upload(filePath, file)
+
+            if (error) {
+                console.error('❌ Erro no upload:', error)
+                throw error
+            }
+
+            const { data: { publicUrl } } = supabaseClient.storage
+                .from('keygram')
+                .getPublicUrl(filePath)
+
+            console.log('✅ Upload concluído, URL:', publicUrl)
+            return publicUrl
+        }
+
+        window.triggerFileUpload = function() {
+            document.getElementById('fileInput').click()
+        }
+
+        window.handleImageUpload = async function(event) {
+            const file = event.target.files[0]
+            if (!file) return
+
+            if (!file.type.match('image.*')) {
+                showToast('Apenas imagens são permitidas')
+                return
+            }
+
+            if (file.size > 5 * 1024 * 1024) {
+                showToast('Imagem deve ter no máximo 5MB')
+                return
+            }
+
+            const attachButton = document.getElementById('attachButton')
+            attachButton.disabled = true
+            showToast('Enviando imagem...')
+
+            try {
+                const imageUrl = await uploadImage(file)
+                await enviarMensagemImagem(imageUrl)
+                showToast('Imagem enviada!')
+            } catch (error) {
+                console.error('Erro ao enviar imagem:', error)
+                showToast('Erro ao enviar imagem')
+            } finally {
+                attachButton.disabled = false
+                event.target.value = ''
+            }
+        }
+
+        async function enviarMensagemImagem(imageUrl) {
+            const { error } = await supabaseClient
+                .from('mensagens')
+                .insert({
+                    conversa_id: conversaId,
+                    remetente: 'lead',
+                    conteudo: imageUrl
+                })
+
+            if (error) {
+                throw error
+            }
+        }
 
         function showToast(message) {
             const toast = document.getElementById('toast')
@@ -472,16 +688,13 @@
 
         // Função para formatar mensagem (suporta imagens)
         function formatMessage(msg) {
-            // Verificar se é imagem base64
-            const isBase64Image = msg.conteudo?.startsWith('data:image');
+            // Verificar se é imagem (URL do storage)
+            const isImage = msg.conteudo?.startsWith('http') && 
+                          (msg.conteudo.includes('.jpg') || msg.conteudo.includes('.png') || 
+                           msg.conteudo.includes('.jpeg') || msg.conteudo.includes('.gif') ||
+                           msg.conteudo.includes('.webp') || msg.conteudo.includes('supabase'));
             
-            // Verificar se é imagem URL
-            const isUrlImage = msg.conteudo?.startsWith('http') && 
-                              (msg.conteudo.includes('.jpg') || msg.conteudo.includes('.png') || 
-                               msg.conteudo.includes('.jpeg') || msg.conteudo.includes('.gif') ||
-                               msg.conteudo.includes('.webp'));
-            
-            if (isBase64Image || isUrlImage) {
+            if (isImage) {
                 // É imagem - mostra a imagem
                 return `<img src="${escapeHtml(msg.conteudo)}" class="message-image" onclick="openImageModal('${escapeHtml(msg.conteudo)}')">`;
             } else {
@@ -490,7 +703,7 @@
             }
         }
 
-        // 🔥 NOVA FUNÇÃO: Registrar visita
+        // Função para registrar visita
         async function registrarVisita(vendedorId) {
             try {
                 await supabaseClient
@@ -507,24 +720,30 @@
 
         // Carregar dados do vendedor
         async function loadVendedor() {
-            const { data: vendedor } = await supabaseClient
+            const { data: vendedor, error } = await supabaseClient
                 .from('vendedores')
                 .select('*')
                 .eq('link_hash', hash)
                 .single()
 
-            if (!vendedor) {
+            if (error || !vendedor) {
+                console.error('Erro ao carregar vendedor:', error)
                 alert('Vendedor não encontrado!')
                 window.location.href = 'index.html'
                 return
             }
 
-            vendedorId = vendedor.id
+            // CORREÇÃO: O campo correto é 'uid' (conforme sua tabela)
+            vendedorId = vendedor.uid
+            vendedorNome = vendedor.nome || 'Vendedor'
+            vendedorFoto = vendedor.foto_url
             
-            // 🔥 REGISTRAR VISITA
-            await registrarVisita(vendedor.id)
+            console.log('✅ Vendedor carregado:', { id: vendedorId, nome: vendedorNome })
             
-            // MOSTRAR NOME COM SELO SE FOR VERIFICADO
+            // Registrar visita
+            await registrarVisita(vendedorId)
+            
+            // Mostrar nome com selo se for verificado
             const nomeSpan = document.getElementById('vendorName')
             if (vendedor.verified) {
                 nomeSpan.innerHTML = `${escapeHtml(vendedor.nome || 'Vendedor')} 
@@ -543,21 +762,28 @@
             }
 
             // Criar ou pegar conversa
-            await getOrCreateConversa(vendedor.id)
+            await getOrCreateConversa(vendedorId)
         }
 
         async function getOrCreateConversa(vendedorId) {
+            console.log('🔍 Procurando conversa para:', { vendedorId, leadId })
+            
             // Procura conversa existente
-            let { data: conversa } = await supabaseClient
+            let { data: conversa, error } = await supabaseClient
                 .from('conversas')
                 .select('*')
                 .eq('vendedor_id', vendedorId)
                 .eq('lead_id', leadId)
-                .single()
+                .maybeSingle()
+
+            if (error) {
+                console.error('Erro ao buscar conversa:', error)
+            }
 
             if (!conversa) {
+                console.log('🆕 Criando nova conversa...')
                 // Cria nova conversa
-                const { data: nova } = await supabaseClient
+                const { data: nova, error: insertError } = await supabaseClient
                     .from('conversas')
                     .insert({
                         vendedor_id: vendedorId,
@@ -566,7 +792,16 @@
                     })
                     .select()
                     .single()
+                
+                if (insertError) {
+                    console.error('❌ Erro ao criar conversa:', insertError)
+                    showToast('Erro ao iniciar conversa')
+                    return
+                }
                 conversa = nova
+                console.log('✅ Nova conversa criada:', conversa)
+            } else {
+                console.log('✅ Conversa existente encontrada:', conversa)
             }
 
             conversaId = conversa.id
@@ -579,11 +814,16 @@
         }
 
         async function loadMessages() {
-            const { data: messages } = await supabaseClient
+            const { data: messages, error } = await supabaseClient
                 .from('mensagens')
                 .select('*')
                 .eq('conversa_id', conversaId)
                 .order('created_at', { ascending: true })
+
+            if (error) {
+                console.error('Erro ao carregar mensagens:', error)
+                return
+            }
 
             const area = document.getElementById('messagesArea')
             
@@ -599,6 +839,7 @@
                 return
             }
 
+            console.log(`📨 Carregadas ${messages.length} mensagens`)
             area.innerHTML = messages.map(msg => `
                 <div class="message ${msg.remetente}">
                     <div class="message-bubble">${formatMessage(msg)}</div>
@@ -611,6 +852,7 @@
         }
 
         function subscribeToMessages() {
+            console.log('👂 Escutando mensagens novas...')
             supabaseClient
                 .channel(`conversa:${conversaId}`)
                 .on('postgres_changes', 
@@ -621,6 +863,8 @@
                         filter: `conversa_id=eq.${conversaId}`
                     },
                     (payload) => {
+                        console.log('📩 Nova mensagem recebida:', payload.new)
+                        
                         const area = document.getElementById('messagesArea')
                         
                         // Remove welcome message se existir
@@ -636,6 +880,18 @@
                         `
                         area.appendChild(msgDiv)
                         area.scrollTop = area.scrollHeight
+
+                        // 🔥 NOTIFICAÇÃO: Se for mensagem do vendedor
+                        if (payload.new.remetente === 'vendor' && !document.hasFocus()) {
+                            const isImage = payload.new.conteudo?.startsWith('http');
+                            const mensagemPreview = isImage ? '📷 Enviou uma imagem' : payload.new.conteudo.substring(0, 50) + (payload.new.conteudo.length > 50 ? '...' : '');
+                            
+                            mostrarNotificacao(
+                                vendedorNome,
+                                mensagemPreview,
+                                vendedorFoto
+                            )
+                        }
                     }
                 )
                 .subscribe()
@@ -650,6 +906,8 @@
             const sendButton = document.getElementById('sendButton')
             sendButton.disabled = true
 
+            console.log('📤 Enviando mensagem:', texto)
+
             const { error } = await supabaseClient
                 .from('mensagens')
                 .insert({
@@ -659,7 +917,10 @@
                 })
 
             if (error) {
+                console.error('Erro ao enviar mensagem:', error)
                 showToast('Erro ao enviar mensagem')
+            } else {
+                console.log('✅ Mensagem enviada com sucesso')
             }
 
             input.value = ''
