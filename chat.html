@@ -155,6 +155,7 @@
             flex-direction: column;
             gap: 16px;
             background: #000000;
+            scroll-behavior: smooth;
         }
 
         .message {
@@ -186,21 +187,18 @@
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
         }
 
-        /* Mensagens do vendedor (brancas) */
         .message.vendor .message-bubble {
             background: #ffffff;
             color: #000000;
             border-bottom-left-radius: 6px;
         }
 
-        /* Mensagens do lead (cinza) */
         .message.lead .message-bubble {
             background: #2c2c2e;
             color: #ffffff;
             border-bottom-right-radius: 6px;
         }
 
-        /* Estilo para imagens */
         .message-image {
             max-width: 200px;
             max-height: 200px;
@@ -229,7 +227,6 @@
             text-align: right;
         }
 
-        /* Input Area */
         .input-area {
             background: #000000;
             border-top: 1px solid rgba(255, 255, 255, 0.1);
@@ -270,7 +267,6 @@
             color: #8e8e93;
         }
 
-        /* Botão de anexo */
         .attach-button {
             width: 44px;
             height: 44px;
@@ -330,7 +326,6 @@
             cursor: not-allowed;
         }
 
-        /* Welcome Message */
         .welcome-message {
             text-align: center;
             padding: 40px 20px;
@@ -346,7 +341,6 @@
             stroke: #8e8e93;
         }
 
-        /* Loading */
         .loading {
             text-align: center;
             padding: 40px;
@@ -354,7 +348,6 @@
             font-size: 14px;
         }
 
-        /* Toast */
         .toast {
             position: fixed;
             top: 20px;
@@ -377,7 +370,6 @@
             transform: translateX(-50%) translateY(20px);
         }
 
-        /* Modal de imagem */
         .image-modal {
             display: none;
             position: fixed;
@@ -417,12 +409,10 @@
             font-size: 20px;
         }
 
-        /* Input de arquivo escondido */
         #fileInput {
             display: none;
         }
         
-        /* Botão de notificação */
         .notification-permission {
             position: fixed;
             bottom: 100px;
@@ -446,7 +436,6 @@
 </head>
 <body>
     <div class="app-container">
-        <!-- Header -->
         <div class="chat-header">
             <a href="javascript:history.back()" class="back-button">
                 <svg viewBox="0 0 24 24">
@@ -465,14 +454,11 @@
             </div>
         </div>
 
-        <!-- Messages Area -->
         <div class="messages-area" id="messagesArea">
             <div class="loading">Carregando conversa...</div>
         </div>
 
-        <!-- Input Area -->
         <div class="input-area">
-            <!-- Botão de anexo -->
             <button class="attach-button" onclick="triggerFileUpload()" id="attachButton">
                 <svg viewBox="0 0 24 24">
                     <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/>
@@ -491,30 +477,24 @@
         </div>
     </div>
 
-    <!-- Botão de permissão de notificação -->
     <div class="notification-permission" id="notificationPermission" onclick="solicitarPermissaoNotificacao()">
         🔔 Ativar notificações
     </div>
 
-    <!-- Modal de imagem -->
     <div class="image-modal" id="imageModal" onclick="this.classList.remove('active')">
         <span class="close-modal" onclick="document.getElementById('imageModal').classList.remove('active')">✕</span>
         <img id="modalImage" src="" alt="">
     </div>
 
-    <!-- Toast -->
     <div id="toast" class="toast"></div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        // Configuração do Supabase
         const SUPABASE_URL = 'https://ygptfdflmrgennajulwt.supabase.co'
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlncHRmZGZsbXJnZW5uYWp1bHd0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMwNzY0MDcsImV4cCI6MjA4ODY1MjQwN30.QObFx4MM5oNlBL9bYM5WBQabnXDVxHZrUgaT15efD4g'
 
-        // Criar cliente Supabase
         const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY)
 
-        // Pega o hash da URL
         const params = new URLSearchParams(window.location.search)
         const hash = params.get('hash')
 
@@ -529,9 +509,6 @@
         let vendedorFoto = null
         let notificacaoPermitida = false
         
-        // ========== LEAD ID PERSISTENTE (IMPORTANTE) ==========
-        // Tenta pegar lead_id do localStorage, se não existir cria um novo
-        // Isso garante que as mensagens não desapareçam quando o lead sair e voltar
         let leadId = localStorage.getItem(`lead_${hash}`)
         if (!leadId) {
             leadId = 'lead_' + Math.random().toString(36).substring(2, 15) + Date.now().toString(36)
@@ -539,33 +516,69 @@
         }
         console.log('🎯 Lead ID persistente:', leadId)
 
-        // ========== FUNÇÕES DE NOTIFICAÇÃO ==========
+        function scrollParaFinal(force = false) {
+            const area = document.getElementById('messagesArea')
+            if (force) {
+                setTimeout(() => area.scrollTop = area.scrollHeight, 100)
+                return
+            }
+            const isNearBottom = area.scrollHeight - area.scrollTop - area.clientHeight < 100
+            if (isNearBottom) {
+                setTimeout(() => area.scrollTop = area.scrollHeight, 100)
+            }
+        }
+
+        // ========== FUNÇÕES DE NOTIFICAÇÃO CORRIGIDAS ==========
         async function solicitarPermissaoNotificacao() {
             const btn = document.getElementById('notificationPermission')
             
             if (!('Notification' in window)) {
-                console.log('Este navegador não suporta notificações')
+                console.log('❌ Este navegador não suporta notificações')
                 btn.style.display = 'none'
                 return false
             }
+
+            console.log('📱 Status atual da permissão:', Notification.permission)
 
             if (Notification.permission === 'granted') {
                 notificacaoPermitida = true
                 btn.style.display = 'none'
                 showToast('✅ Notificações ativadas!')
+                console.log('✅ Notificações já estavam permitidas')
                 return true
             }
 
             if (Notification.permission !== 'denied') {
-                const permission = await Notification.requestPermission()
-                notificacaoPermitida = permission === 'granted'
-                if (notificacaoPermitida) {
+                try {
+                    console.log('📱 Solicitando permissão...')
+                    const permission = await Notification.requestPermission()
+                    console.log('📱 Resposta da permissão:', permission)
+                    
+                    notificacaoPermitida = permission === 'granted'
+                    
+                    if (notificacaoPermitida) {
+                        btn.style.display = 'none'
+                        showToast('✅ Notificações ativadas!')
+                        console.log('✅ Permissão concedida!')
+                        
+                        // Teste de notificação
+                        setTimeout(() => {
+                            mostrarNotificacao(
+                                '🔔 KEYGRAM',
+                                'Notificações funcionando!',
+                                vendedorFoto || 'https://ygptfdflmrgennajulwt.supabase.co/storage/v1/object/public/keygram//icon-192.png'
+                            )
+                        }, 2000)
+                    } else {
+                        btn.style.display = 'none'
+                        console.log('❌ Permissão negada pelo usuário')
+                    }
+                    return notificacaoPermitida
+                } catch (error) {
+                    console.error('❌ Erro ao solicitar permissão:', error)
                     btn.style.display = 'none'
-                    showToast('✅ Notificações ativadas!')
-                } else {
-                    btn.style.display = 'none'
+                    return false
                 }
-                return notificacaoPermitida
             }
 
             btn.style.display = 'none'
@@ -573,37 +586,63 @@
         }
 
         function mostrarNotificacao(titulo, corpo, icone) {
-            if (!notificacaoPermitida) return
+            console.log('🔔 Tentando mostrar notificação:', { titulo, corpo, icone, permitida: notificacaoPermitida, permissao: Notification.permission })
+            
+            if (Notification.permission !== 'granted') {
+                console.log('❌ Notificação bloqueada - permissão:', Notification.permission)
+                return
+            }
 
-            // Não mostrar notificação se a aba estiver ativa
-            if (document.hasFocus()) return
+            if (document.hasFocus()) {
+                console.log('📱 Aba ativa - não mostrando notificação')
+                return
+            }
 
             try {
                 const notification = new Notification(titulo, {
                     body: corpo,
-                    icon: icone || '/icon.png',
-                    badge: '/icon.png',
-                    vibrate: [200, 100, 200]
+                    icon: icone || 'https://ygptfdflmrgennajulwt.supabase.co/storage/v1/object/public/keygram//icon-192.png',
+                    badge: 'https://ygptfdflmrgennajulwt.supabase.co/storage/v1/object/public/keygram//icon-72.png',
+                    vibrate: [200, 100, 200],
+                    tag: `msg-${Date.now()}`,
+                    renotify: true,
+                    silent: false,
+                    requireInteraction: false
                 })
 
                 notification.onclick = function() {
+                    console.log('👆 Notificação clicada')
                     window.focus()
                     this.close()
                 }
 
-                // Fechar automaticamente após 5 segundos
+                notification.onerror = function(error) {
+                    console.error('❌ Erro na notificação:', error)
+                }
+
+                console.log('✅ Notificação enviada com sucesso!')
+
                 setTimeout(() => notification.close(), 5000)
+
             } catch (e) {
-                console.log('Erro ao mostrar notificação:', e)
+                console.error('❌ Erro ao criar notificação:', e)
             }
         }
 
-        // Mostrar botão de permissão se necessário
+        // SOLICITAR PERMISSÃO AUTOMATICAMENTE AO CARREGAR
         setTimeout(() => {
-            if (Notification.permission === 'default') {
-                document.getElementById('notificationPermission').classList.add('show')
+            if ('Notification' in window) {
+                if (Notification.permission === 'default') {
+                    document.getElementById('notificationPermission').classList.add('show')
+                    console.log('🔔 Botão de permissão mostrado')
+                } else if (Notification.permission === 'granted') {
+                    notificacaoPermitida = true
+                    console.log('✅ Notificações já permitidas')
+                } else {
+                    console.log('❌ Notificações bloqueadas')
+                }
             }
-        }, 2000)
+        }, 1000)
 
         // ========== FUNÇÕES DE UPLOAD ==========
         async function uploadImage(file) {
@@ -692,30 +731,24 @@
             return div.innerHTML
         }
 
-        // Função para abrir imagem em tela cheia
         window.openImageModal = function(src) {
             document.getElementById('modalImage').src = src;
             document.getElementById('imageModal').classList.add('active');
         }
 
-        // Função para formatar mensagem (suporta imagens)
         function formatMessage(msg) {
-            // Verificar se é imagem (URL do storage)
             const isImage = msg.conteudo?.startsWith('http') && 
                           (msg.conteudo.includes('.jpg') || msg.conteudo.includes('.png') || 
                            msg.conteudo.includes('.jpeg') || msg.conteudo.includes('.gif') ||
                            msg.conteudo.includes('.webp') || msg.conteudo.includes('supabase'));
             
             if (isImage) {
-                // É imagem - mostra a imagem
                 return `<img src="${escapeHtml(msg.conteudo)}" class="message-image" onclick="openImageModal('${escapeHtml(msg.conteudo)}')">`;
             } else {
-                // É texto normal
                 return escapeHtml(msg.conteudo);
             }
         }
 
-        // Função para registrar visita
         async function registrarVisita(vendedorId) {
             try {
                 await supabaseClient
@@ -730,7 +763,6 @@
             }
         }
 
-        // Carregar dados do vendedor (igual ao antigo que funciona)
         async function loadVendedor() {
             const { data: vendedor } = await supabaseClient
                 .from('vendedores')
@@ -744,14 +776,12 @@
                 return
             }
 
-            vendedorId = vendedor.id  // ← USANDO 'id' IGUAL AO ANTIGO
+            vendedorId = vendedor.id
             vendedorNome = vendedor.nome || 'Vendedor'
             vendedorFoto = vendedor.foto_url
             
-            // Registrar visita
             await registrarVisita(vendedor.id)
             
-            // Mostrar nome com selo se for verificado
             const nomeSpan = document.getElementById('vendorName')
             if (vendedor.verified) {
                 nomeSpan.innerHTML = `${escapeHtml(vendedor.nome || 'Vendedor')} 
@@ -769,12 +799,10 @@
                     `<img src="${vendedor.foto_url}" alt="Avatar">`
             }
 
-            // Criar ou pegar conversa
             await getOrCreateConversa(vendedor.id)
         }
 
         async function getOrCreateConversa(vendedorId) {
-            // Procura conversa existente (igual ao antigo, mas usando maybeSingle para evitar erros)
             let { data: conversa } = await supabaseClient
                 .from('conversas')
                 .select('*')
@@ -783,7 +811,6 @@
                 .maybeSingle()
 
             if (!conversa) {
-                // Cria nova conversa
                 const { data: nova } = await supabaseClient
                     .from('conversas')
                     .insert({
@@ -798,10 +825,7 @@
 
             conversaId = conversa.id
             
-            // Carregar mensagens antigas
             await loadMessages()
-            
-            // Escutar mensagens novas
             subscribeToMessages()
         }
 
@@ -834,8 +858,7 @@
                 </div>
             `).join('')
 
-            // Scroll para última mensagem
-            area.scrollTop = area.scrollHeight
+            scrollParaFinal(true)
         }
 
         function subscribeToMessages() {
@@ -854,7 +877,6 @@
                         
                         const area = document.getElementById('messagesArea')
                         
-                        // Remove welcome message se existir
                         if (area.children.length === 1 && area.children[0].classList.contains('welcome-message')) {
                             area.innerHTML = ''
                         }
@@ -866,10 +888,13 @@
                             <div class="message-time">${new Date(payload.new.created_at).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}</div>
                         `
                         area.appendChild(msgDiv)
-                        area.scrollTop = area.scrollHeight
+                        
+                        scrollParaFinal(false)
 
                         // NOTIFICAÇÃO: Se for mensagem do vendedor
-                        if (payload.new.remetente === 'vendor' && !document.hasFocus()) {
+                        if (payload.new.remetente === 'vendor') {
+                            console.log('🔔 É mensagem do vendedor!')
+                            
                             const isImage = payload.new.conteudo?.startsWith('http');
                             const mensagemPreview = isImage ? '📷 Enviou uma imagem' : payload.new.conteudo.substring(0, 50) + (payload.new.conteudo.length > 50 ? '...' : '');
                             
@@ -914,14 +939,12 @@
             sendButton.disabled = false
         }
 
-        // Permitir enviar com Enter
         document.getElementById('messageInput').addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
                 sendMessage()
             }
         })
 
-        // Iniciar
         loadVendedor()
     </script>
 </body>
