@@ -529,9 +529,15 @@
         let vendedorFoto = null
         let notificacaoPermitida = false
         
-        // ========== LEAD ID PERSISTENTE ==========
-        // Usando o mesmo método do chat antigo que funciona
-        const leadId = 'lead_' + Math.random().toString(36).substring(2, 15)
+        // ========== LEAD ID PERSISTENTE (IMPORTANTE) ==========
+        // Tenta pegar lead_id do localStorage, se não existir cria um novo
+        // Isso garante que as mensagens não desapareçam quando o lead sair e voltar
+        let leadId = localStorage.getItem(`lead_${hash}`)
+        if (!leadId) {
+            leadId = 'lead_' + Math.random().toString(36).substring(2, 15) + Date.now().toString(36)
+            localStorage.setItem(`lead_${hash}`, leadId)
+        }
+        console.log('🎯 Lead ID persistente:', leadId)
 
         // ========== FUNÇÕES DE NOTIFICAÇÃO ==========
         async function solicitarPermissaoNotificacao() {
@@ -768,13 +774,13 @@
         }
 
         async function getOrCreateConversa(vendedorId) {
-            // Procura conversa existente (igual ao antigo)
+            // Procura conversa existente (igual ao antigo, mas usando maybeSingle para evitar erros)
             let { data: conversa } = await supabaseClient
                 .from('conversas')
                 .select('*')
                 .eq('vendedor_id', vendedorId)
                 .eq('lead_id', leadId)
-                .single()
+                .maybeSingle()
 
             if (!conversa) {
                 // Cria nova conversa
@@ -820,6 +826,7 @@
                 return
             }
 
+            console.log(`📨 Carregadas ${messages.length} mensagens`)
             area.innerHTML = messages.map(msg => `
                 <div class="message ${msg.remetente}">
                     <div class="message-bubble">${formatMessage(msg)}</div>
@@ -832,6 +839,7 @@
         }
 
         function subscribeToMessages() {
+            console.log('👂 Escutando mensagens novas...')
             supabaseClient
                 .channel(`conversa:${conversaId}`)
                 .on('postgres_changes', 
@@ -842,6 +850,8 @@
                         filter: `conversa_id=eq.${conversaId}`
                     },
                     (payload) => {
+                        console.log('📩 Nova mensagem recebida:', payload.new)
+                        
                         const area = document.getElementById('messagesArea')
                         
                         // Remove welcome message se existir
@@ -883,6 +893,8 @@
             const sendButton = document.getElementById('sendButton')
             sendButton.disabled = true
 
+            console.log('📤 Enviando mensagem:', texto)
+
             const { error } = await supabaseClient
                 .from('mensagens')
                 .insert({
@@ -892,7 +904,10 @@
                 })
 
             if (error) {
+                console.error('Erro ao enviar mensagem:', error)
                 showToast('Erro ao enviar mensagem')
+            } else {
+                console.log('✅ Mensagem enviada com sucesso')
             }
 
             input.value = ''
@@ -910,4 +925,4 @@
         loadVendedor()
     </script>
 </body>
-        </html>
+    </html>
