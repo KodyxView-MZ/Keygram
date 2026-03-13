@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>KEYGRAM • Chat</title>
+    <title>KEYGRAM • Painel</title>
     <style>
         * {
             margin: 0;
@@ -19,7 +19,6 @@
             flex-direction: column;
         }
 
-        /* Main container */
         .app-container {
             display: flex;
             flex-direction: column;
@@ -28,72 +27,136 @@
             margin: 0 auto;
             width: 100%;
             background: #000000;
+            position: relative;
         }
 
-        /* Header */
-        .chat-header {
-            padding: 20px 24px 12px 24px;
+        /* Top Navigation - Glassmorphism */
+        .top-nav {
+            padding: 16px 20px;
             display: flex;
             align-items: center;
-            gap: 16px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            background: rgba(0, 0, 0, 0.8);
+            justify-content: space-between;
+            background: rgba(255, 255, 255, 0.03);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
             position: sticky;
             top: 0;
             z-index: 100;
         }
 
-        .back-button {
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-icon {
             width: 40px;
             height: 40px;
-            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .logo-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            filter: brightness(0) invert(1);
+        }
+
+        .logo-text {
+            font-size: 22px;
+            letter-spacing: -0.5px;
+        }
+
+        .logo-text strong {
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        .logo-text span {
+            font-weight: 300;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .top-actions {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .top-actions svg {
+            width: 24px;
+            height: 24px;
+            stroke: #ffffff;
+            stroke-width: 1.5;
+            cursor: pointer;
+            opacity: 0.8;
+            transition: opacity 0.2s;
+        }
+
+        .top-actions svg:hover {
+            opacity: 1;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
             background: rgba(255, 255, 255, 0.05);
             border: 1px solid rgba(255, 255, 255, 0.1);
             display: flex;
             align-items: center;
             justify-content: center;
+            overflow: hidden;
             cursor: pointer;
-            transition: all 0.2s;
-            text-decoration: none;
         }
 
-        .back-button svg {
+        .user-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .user-avatar svg {
             width: 22px;
             height: 22px;
-            stroke: #ffffff;
-            stroke-width: 1.8;
+            stroke: rgba(255, 255, 255, 0.5);
         }
 
-        .back-button:hover {
-            background: rgba(255, 255, 255, 0.1);
-        }
-
-        .vendor-info {
+        /* Content Area */
+        .content-area {
             flex: 1;
+            overflow-y: auto;
+            padding: 8px 0 80px 0;
+            background: #000000;
         }
 
-        .vendor-name {
-            font-size: 18px;
+        /* Welcome Section */
+        .welcome-section {
+            padding: 24px 20px 8px 20px;
+        }
+
+        .welcome-title {
+            font-size: 28px;
             font-weight: 600;
             color: #ffffff;
-            margin-bottom: 2px;
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
         }
 
         .verified-badge {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            width: 20px;
-            height: 20px;
+            width: 22px;
+            height: 22px;
             background: #007AFF;
-            border-radius: 10px;
-            color: white;
-            font-size: 12px;
+            border-radius: 50%;
             margin-left: 4px;
         }
 
@@ -102,266 +165,418 @@
             height: 12px;
             stroke: white;
             stroke-width: 2.5;
-            fill: none;
         }
 
-        .vendor-status {
+        .welcome-subtitle {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.5);
+            margin-top: 4px;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            padding: 20px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 24px;
+            padding: 20px 16px;
+        }
+
+        .stat-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 12px;
+        }
+
+        .stat-icon svg {
+            width: 22px;
+            height: 22px;
+            stroke: #ffffff;
+            opacity: 0.8;
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: 600;
+            color: #ffffff;
+        }
+
+        .stat-label {
             font-size: 13px;
-            color: #4CAF50;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        /* Chat List */
+        .chat-list {
+            margin-top: 8px;
+        }
+
+        .chat-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 20px;
+            cursor: pointer;
+            transition: background 0.2s;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+        }
+
+        .chat-item:hover {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .chat-avatar {
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .chat-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+
+        .chat-avatar svg {
+            width: 26px;
+            height: 26px;
+            stroke: rgba(255, 255, 255, 0.5);
+        }
+
+        .chat-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .chat-header-info {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 4px;
+        }
+
+        .chat-name {
+            font-size: 17px;
+            font-weight: 500;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .chat-time {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .chat-message {
             display: flex;
             align-items: center;
             gap: 4px;
         }
 
-        .vendor-status::before {
-            content: '';
-            width: 8px;
-            height: 8px;
-            background: #4CAF50;
-            border-radius: 50%;
-            display: inline-block;
-        }
-
-        .vendor-avatar {
-            width: 48px;
-            height: 48px;
-            border-radius: 16px;
-            background: #1a1a1a;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        .chat-message-preview {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.5);
+            white-space: nowrap;
             overflow: hidden;
-        }
-
-        .vendor-avatar img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .vendor-avatar svg {
-            width: 26px;
-            height: 26px;
-            stroke: #8e8e93;
-        }
-
-        /* Messages Area */
-        .messages-area {
-            flex: 1;
-            overflow-y: auto;
-            padding: 24px;
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-            background: #000000;
-        }
-
-        .message {
-            display: flex;
-            flex-direction: column;
-            max-width: 80%;
-            animation: fadeIn 0.3s ease;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .message.vendor {
-            align-self: flex-start;
-        }
-
-        .message.lead {
-            align-self: flex-end;
-        }
-
-        .message-bubble {
-            padding: 14px 18px;
-            border-radius: 22px;
-            font-size: 15px;
-            line-height: 1.4;
-            word-break: break-word;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
-        }
-
-        /* Mensagens do vendedor (brancas) */
-        .message.vendor .message-bubble {
-            background: #ffffff;
-            color: #000000;
-            border-bottom-left-radius: 6px;
-        }
-
-        /* Mensagens do lead (cinza) */
-        .message.lead .message-bubble {
-            background: #2c2c2e;
-            color: #ffffff;
-            border-bottom-right-radius: 6px;
-        }
-
-        /* Estilo para imagens */
-        .message-image {
+            text-overflow: ellipsis;
             max-width: 200px;
-            max-height: 200px;
-            border-radius: 16px;
-            cursor: pointer;
-            transition: transform 0.2s;
         }
 
-        .message-image:hover {
-            transform: scale(1.05);
-        }
-
-        .message-time {
-            font-size: 11px;
-            color: #8e8e93;
-            margin-top: 4px;
-            margin-left: 8px;
-            margin-right: 8px;
-        }
-
-        .message.vendor .message-time {
-            text-align: left;
-        }
-
-        .message.lead .message-time {
-            text-align: right;
-        }
-
-        /* Input Area */
-        .input-area {
-            background: #000000;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 16px 20px 20px 20px;
-            display: flex;
-            gap: 12px;
-            align-items: center;
-        }
-
-        .input-wrapper {
-            flex: 1;
-            background: #1c1c1e;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 24px;
-            padding: 4px 4px 4px 18px;
-            display: flex;
-            align-items: center;
-            transition: all 0.2s;
-        }
-
-        .input-wrapper:focus-within {
-            border-color: #007AFF;
-            background: #1c1c1e;
-            box-shadow: 0 0 0 4px rgba(0, 122, 255, 0.1);
-        }
-
-        .input-wrapper input {
-            flex: 1;
-            border: none;
-            padding: 12px 0;
-            font-size: 15px;
-            background: transparent;
-            outline: none;
-            color: #ffffff;
-        }
-
-        .input-wrapper input::placeholder {
-            color: #8e8e93;
-        }
-
-        /* Botão de anexo */
-        .attach-button {
-            width: 44px;
-            height: 44px;
-            border: none;
-            background: transparent;
-            color: #8e8e93;
-            border-radius: 22px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.2s;
-            flex-shrink: 0;
-        }
-
-        .attach-button:hover {
+        .chat-badge {
             background: rgba(255, 255, 255, 0.1);
             color: #ffffff;
-        }
-
-        .attach-button svg {
-            width: 22px;
-            height: 22px;
-            stroke: currentColor;
-            stroke-width: 1.8;
-        }
-
-        .send-button {
-            width: 44px;
-            height: 44px;
-            border: none;
-            background: #007AFF;
-            color: white;
-            border-radius: 22px;
+            font-size: 12px;
+            font-weight: 500;
+            min-width: 20px;
+            height: 20px;
+            border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
-            cursor: pointer;
-            transition: all 0.2s;
-            flex-shrink: 0;
-        }
-
-        .send-button svg {
-            width: 20px;
-            height: 20px;
-            stroke: white;
-            stroke-width: 2;
-        }
-
-        .send-button:hover {
-            background: #0051d5;
-            transform: scale(0.95);
-        }
-
-        .send-button:disabled {
-            background: #1c1c1e;
-            cursor: not-allowed;
-        }
-
-        /* Welcome Message */
-        .welcome-message {
-            text-align: center;
-            padding: 40px 20px;
-            color: #8e8e93;
-            font-size: 14px;
-            background: #1c1c1e;
-            border-radius: 28px;
+            padding: 0 6px;
+            margin-left: auto;
             border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        .empty-state svg {
+            width: 48px;
+            height: 48px;
+            stroke: rgba(255, 255, 255, 0.2);
+            margin-bottom: 16px;
+        }
+
+        .empty-state p {
+            font-size: 15px;
+        }
+
+        /* Bottom Navigation - Glassmorphism */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 8px 16px 20px;
+            display: flex;
+            justify-content: space-around;
+            z-index: 100;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            border-radius: 30px;
+            cursor: pointer;
+            flex: 1;
+            max-width: 120px;
+            color: rgba(255, 255, 255, 0.5);
+            transition: all 0.2s;
+        }
+
+        .nav-item.active {
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .nav-item svg {
+            width: 24px;
+            height: 24px;
+            stroke: currentColor;
+            stroke-width: 1.5;
+            fill: none;
+        }
+
+        .nav-item span {
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        /* Modal - Glassmorphism */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            z-index: 200;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 32px;
+            padding: 24px;
+            max-width: 400px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 24px;
+            color: #ffffff;
+        }
+
+        .modal-header svg {
+            width: 28px;
+            height: 28px;
+            stroke: #ffffff;
+            opacity: 0.8;
+        }
+
+        .modal-header h2 {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-label {
+            display: block;
+            font-size: 13px;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.5);
+            margin-bottom: 8px;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 14px 18px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            font-size: 15px;
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.03);
+            outline: none;
+        }
+
+        input:focus, textarea:focus {
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .upload-area {
+            border: 1px dashed rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 24px;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.02);
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+
+        .upload-area:hover {
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .upload-icon svg {
+            width: 32px;
+            height: 32px;
+            stroke: rgba(255, 255, 255, 0.5);
+        }
+
+        .upload-text {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .preview-image {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin: 10px auto;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            display: none;
+        }
+
+        .link-container {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 12px;
             margin: 20px 0;
         }
 
-        .welcome-message svg {
-            stroke: #8e8e93;
+        .link-label {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.5);
+            margin-bottom: 8px;
         }
 
-        /* Loading */
-        .loading {
-            text-align: center;
-            padding: 40px;
-            color: #8e8e93;
+        .link-value {
             font-size: 14px;
+            color: #ffffff;
+            word-break: break-all;
+            padding: 8px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            cursor: pointer;
         }
 
-        /* Toast */
+        .btn {
+            padding: 14px 24px;
+            border: none;
+            border-radius: 16px;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+            width: 100%;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-primary:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+            flex: 1;
+        }
+
+        .btn-outline:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 12px;
+        }
+
         .toast {
             position: fixed;
             top: 20px;
             left: 50%;
             transform: translateX(-50%) translateY(-100px);
-            background: #1c1c1e;
+            background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             color: white;
             padding: 12px 24px;
             border-radius: 30px;
@@ -369,137 +584,209 @@
             font-weight: 500;
             z-index: 1000;
             transition: transform 0.3s;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            white-space: nowrap;
         }
 
         .toast.show {
             transform: translateX(-50%) translateY(20px);
         }
 
-        /* Modal de imagem */
-        .image-modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.95);
-            z-index: 1000;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .image-modal.active {
-            display: flex;
-        }
-
-        .image-modal img {
-            max-width: 90%;
-            max-height: 90%;
-            border-radius: 16px;
-        }
-
-        .close-modal {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            width: 44px;
-            height: 44px;
-            background: rgba(255,255,255,0.1);
-            border-radius: 22px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            color: white;
-            font-size: 20px;
-        }
-
-        /* Input de arquivo escondido */
-        #fileInput {
+        .hidden {
             display: none;
         }
-        
-        /* Botão de notificação */
-        .notification-permission {
-            position: fixed;
-            bottom: 100px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #007AFF;
-            color: white;
-            padding: 12px 24px;
-            border-radius: 30px;
-            font-size: 14px;
-            z-index: 1000;
-            cursor: pointer;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
-            display: none;
+
+        /* Scrollbar */
+        .content-area::-webkit-scrollbar {
+            width: 4px;
         }
-        
-        .notification-permission.show {
-            display: block;
+
+        .content-area::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .content-area::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
         }
     </style>
 </head>
 <body>
     <div class="app-container">
-        <!-- Header -->
-        <div class="chat-header">
-            <a href="javascript:history.back()" class="back-button">
-                <svg viewBox="0 0 24 24">
-                    <path d="M19 12H5M12 19l-7-7 7-7"/>
+        <div class="top-nav">
+            <div class="logo-area">
+                <div class="logo-icon">
+                    <img src="ei_1773333191455-removebg-preview.png" alt="KEYGRAM">
+                </div>
+                <div class="logo-text">
+                    <strong>KEY</strong><span>GRAM</span>
+                </div>
+            </div>
+            <div class="top-actions">
+                <svg viewBox="0 0 24 24" onclick="showCommunityModal()">
+                    <circle cx="12" cy="12" r="10"/>
+                    <line x1="12" y1="8" x2="12" y2="16"/>
+                    <line x1="8" y1="12" x2="16" y2="12"/>
                 </svg>
+                <svg viewBox="0 0 24 24" onclick="showComingSoon()">
+                    <circle cx="12" cy="12" r="10"/>
+                    <polyline points="12 6 12 12 16 14"/>
+                </svg>
+                <div class="user-avatar" id="userAvatar" onclick="openSettings()">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                        <circle cx="12" cy="7" r="4"/>
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        <div class="content-area" id="mainContent">
+            <!-- Conteúdo será carregado pelo JavaScript -->
+        </div>
+
+        <!-- Bottom Navigation - NOVOS ÍCONES -->
+        <div class="bottom-nav">
+            <div class="nav-item active" onclick="switchTab('chats')" id="navChats">
+                <svg viewBox="0 0 24 24">
+                    <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
+                </svg>
+                <span>Chats</span>
+            </div>
+            <div class="nav-item" onclick="emDesenvolvimento('grupos')" id="navGrupos">
+                <!-- Ícone de Grupos: 👥 (duas pessoas) -->
+                <svg viewBox="0 0 24 24">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                    <circle cx="9" cy="7" r="4"/>
+                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                </svg>
+                <span>Grupos</span>
+            </div>
+            <div class="nav-item" onclick="emDesenvolvimento('automacao')" id="navAutomacao">
+                <!-- Ícone de Automação: 🤖 (robô) -->
+                <svg viewBox="0 0 24 24">
+                    <rect x="3" y="8" width="18" height="12" rx="2" ry="2"/>
+                    <circle cx="9" cy="12" r="1.5"/>
+                    <circle cx="15" cy="12" r="1.5"/>
+                    <line x1="9" y1="16" x2="15" y2="16"/>
+                    <path d="M8 4 L12 8 L16 4"/>
+                </svg>
+                <span>Automação</span>
+            </div>
+            <div class="nav-item" onclick="openSettings()" id="navSettings">
+                <!-- Ícone de Ajustes: ⚙️ (engrenagem) -->
+                <svg viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="3"/>
+                    <path d="M19.4 15a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H5.78a1.65 1.65 0 0 0-1.51 1 1.65 1.65 0 0 0 .33 1.82l.04.04A10 10 0 0 0 12 17.66a10 10 0 0 0 6.36-2.62z"/>
+                </svg>
+                <span>Ajustes</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div class="modal" id="settingsModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <svg viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="3"/>
+                    <path d="M19.4 15a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H5.78a1.65 1.65 0 0 0-1.51 1 1.65 1.65 0 0 0 .33 1.82l.04.04A10 10 0 0 0 12 17.66a10 10 0 0 0 6.36-2.62z"/>
+                </svg>
+                <h2>Configurações do Perfil</h2>
+            </div>
+            
+            <div class="upload-area" onclick="triggerUpload()">
+                <input type="file" id="imageUpload" accept="image/*" style="display: none;" onchange="handleImageUpload(event)">
+                <div class="upload-icon">
+                    <svg viewBox="0 0 24 24">
+                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                        <circle cx="8.5" cy="8.5" r="1.5"/>
+                        <polyline points="21 15 16 10 5 21"/>
+                    </svg>
+                </div>
+                <div class="upload-text">
+                    <strong>Foto do perfil</strong><br>
+                    <span id="uploadHint">Clique para adicionar</span>
+                </div>
+                <img id="imagePreview" class="preview-image" src="" alt="Preview">
+            </div>
+            
+            <div class="input-group">
+                <label class="input-label">Nome</label>
+                <input type="text" id="modalName" placeholder="Como você quer ser chamado">
+            </div>
+
+            <div class="input-group">
+                <label class="input-label">Descrição</label>
+                <textarea id="modalDescription" placeholder="Fale sobre o que você oferece..."></textarea>
+            </div>
+
+            <div class="link-container">
+                <div class="link-label">Seu link de chat</div>
+                <div class="link-value" id="linkDisplay" onclick="copyLink()">Carregando...</div>
+            </div>
+
+            <div class="btn-group">
+                <button class="btn btn-outline" onclick="closeSettings()">Cancelar</button>
+                <button class="btn btn-primary" onclick="saveSettings()">Salvar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal da Comunidade -->
+    <div class="modal" id="communityModal">
+        <div class="modal-content" style="position: relative; padding: 40px 24px 32px;">
+            <div class="close-community" onclick="closeCommunityModal()" style="position: absolute; top: 16px; right: 16px; width: 36px; height: 36px; border-radius: 50%; background: rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: center; cursor: pointer;">
+                <svg viewBox="0 0 24 24" width="18" height="18" stroke="rgba(255,255,255,0.5)">
+                    <line x1="18" y1="6" x2="6" y2="18"/>
+                    <line x1="6" y1="6" x2="18" y2="18"/>
+                </svg>
+            </div>
+            
+            <div class="community-icon" style="width: 80px; height: 80px; background: rgba(255,255,255,0.05); border-radius: 50%; border: 1px solid rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
+                <svg viewBox="0 0 24 24" width="40" height="40" stroke="white" fill="none" opacity="0.8">
+                    <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
+                </svg>
+            </div>
+            
+            <h2 style="text-align: center; font-size: 24px; font-weight: 700; color: #ffffff; margin-bottom: 8px;">Junte-se à nossa comunidade! 👋</h2>
+            <p style="text-align: center; color: rgba(255,255,255,0.5); font-size: 14px; margin-bottom: 24px;">Conecte-se com outros vendedores e fique por dentro das novidades</p>
+            
+            <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); border-radius: 20px; padding: 20px; margin: 20px 0;">
+                <div style="display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.05);">
+                    <svg viewBox="0 0 24 24" width="22" height="22" stroke="white" opacity="0.8">
+                        <circle cx="12" cy="12" r="10"/>
+                        <polyline points="12 6 12 12 16 14"/>
+                    </svg>
+                    <span style="font-size: 14px; color: rgba(255,255,255,0.8);">Fique por dentro de todas as atualizações</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.05);">
+                    <svg viewBox="0 0 24 24" width="22" height="22" stroke="white" opacity="0.8">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                        <circle cx="12" cy="7" r="4"/>
+                    </svg>
+                    <span style="font-size: 14px; color: rgba(255,255,255,0.8);">Conecte-se com outros vendedores</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 12px; padding: 10px 0;">
+                    <svg viewBox="0 0 24 24" width="22" height="22" stroke="white" opacity="0.8">
+                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                        <circle cx="8.5" cy="8.5" r="1.5"/>
+                        <polyline points="21 15 16 10 5 21"/>
+                    </svg>
+                    <span style="font-size: 14px; color: rgba(255,255,255,0.8);">Participe de sorteios e promoções</span>
+                </div>
+            </div>
+            
+            <a href="https://chat.whatsapp.com/Gbhql5yda4YFC03ceSaxgR" 
+               class="btn btn-primary" 
+               style="text-decoration: none; margin-top: 16px; display: flex; align-items: center; justify-content: center; gap: 8px;"
+               target="_blank"
+               onclick="closeCommunityModal()">
+                <svg viewBox="0 0 24 24" width="20" height="20" style="stroke: white;">
+                    <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
+                </svg>
+                Entrar no grupo do WhatsApp
             </a>
-            <div class="vendor-avatar" id="vendorAvatar">
-                <svg viewBox="0 0 24 24">
-                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-                    <circle cx="12" cy="7" r="4"/>
-                </svg>
-            </div>
-            <div class="vendor-info">
-                <div class="vendor-name" id="vendorName">Carregando...</div>
-                <div class="vendor-status">Online</div>
-            </div>
         </div>
-
-        <!-- Messages Area -->
-        <div class="messages-area" id="messagesArea">
-            <div class="loading">Carregando conversa...</div>
-        </div>
-
-        <!-- Input Area -->
-        <div class="input-area">
-            <!-- Botão de anexo -->
-            <button class="attach-button" onclick="triggerFileUpload()" id="attachButton">
-                <svg viewBox="0 0 24 24">
-                    <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/>
-                </svg>
-            </button>
-            <input type="file" id="fileInput" accept="image/*" onchange="handleImageUpload(event)">
-            <div class="input-wrapper">
-                <input type="text" id="messageInput" placeholder="Digite sua mensagem..." autocomplete="off">
-            </div>
-            <button class="send-button" onclick="sendMessage()" id="sendButton">
-                <svg viewBox="0 0 24 24">
-                    <line x1="22" y1="2" x2="11" y2="13"/>
-                    <polygon points="22 2 15 22 11 13 2 9 22 2"/>
-                </svg>
-            </button>
-        </div>
-    </div>
-
-    <!-- Botão de permissão de notificação -->
-    <div class="notification-permission" id="notificationPermission" onclick="solicitarPermissaoNotificacao()">
-        🔔 Ativar notificações
-    </div>
-
-    <!-- Modal de imagem -->
-    <div class="image-modal" id="imageModal" onclick="this.classList.remove('active')">
-        <span class="close-modal" onclick="document.getElementById('imageModal').classList.remove('active')">✕</span>
-        <img id="modalImage" src="" alt="">
     </div>
 
     <!-- Toast -->
@@ -511,127 +798,153 @@
         const SUPABASE_URL = 'https://ygptfdflmrgennajulwt.supabase.co'
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlncHRmZGZsbXJnZW5uYWp1bHd0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMwNzY0MDcsImV4cCI6MjA4ODY1MjQwN30.QObFx4MM5oNlBL9bYM5WBQabnXDVxHZrUgaT15efD4g'
 
-        // Criar cliente Supabase
         const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY)
 
-        // Pega o hash da URL
-        const params = new URLSearchParams(window.location.search)
-        const hash = params.get('hash')
+        let vendedorData = {}
+        let user = null
+        let grupos = []
+        let userStatus = 'active'
 
-        if (!hash) {
-            alert('Link inválido!')
-            window.location.href = 'index.html'
+        function showToast(message) {
+            const toast = document.getElementById('toast')
+            toast.textContent = message
+            toast.classList.add('show')
+            setTimeout(() => toast.classList.remove('show'), 2000)
         }
 
-        let conversaId = null
-        let vendedorId = null
-        let vendedorNome = ''
-        let vendedorFoto = null
-        let notificacaoPermitida = false
-        
-        // ========== LEAD ID PERSISTENTE (IMPORTANTE) ==========
-        // Tenta pegar lead_id do localStorage, se não existir cria um novo
-        // Isso garante que as mensagens não desapareçam quando o lead sair e voltar
-        let leadId = localStorage.getItem(`lead_${hash}`)
-        if (!leadId) {
-            leadId = 'lead_' + Math.random().toString(36).substring(2, 15) + Date.now().toString(36)
-            localStorage.setItem(`lead_${hash}`, leadId)
+        window.emDesenvolvimento = function(recurso) {
+            showToast(`✨ ${recurso} está em desenvolvimento!`)
         }
-        console.log('🎯 Lead ID persistente:', leadId)
 
-        // ========== FUNÇÕES DE NOTIFICAÇÃO ==========
-        async function solicitarPermissaoNotificacao() {
-            const btn = document.getElementById('notificationPermission')
+        function showCommunityModal() {
+            document.getElementById('communityModal').classList.add('active');
+        }
+
+        window.closeCommunityModal = function() {
+            document.getElementById('communityModal').classList.remove('active');
+        }
+
+        function showBlockScreen(status) {
+            const mainContent = document.getElementById('mainContent')
+            document.querySelector('.bottom-nav').style.display = 'none'
             
-            if (!('Notification' in window)) {
-                console.log('Este navegador não suporta notificações')
-                btn.style.display = 'none'
+            mainContent.innerHTML = `
+                <div class="status-block">
+                    <h1 class="status-title">${status === 'suspended' ? 'Acesso Suspenso' : 'Conta Banida'}</h1>
+                    <p class="status-message">Sua conta foi ${status === 'suspended' ? 'suspensa' : 'banida'}</p>
+                    <span class="logout-link" onclick="handleLogout()">Sair da conta</span>
+                </div>
+            `
+        }
+
+        function formatarHorario(data) {
+            const agora = new Date()
+            const mensagem = new Date(data)
+            const diff = agora - mensagem
+            const umDia = 24 * 60 * 60 * 1000
+            
+            if (diff < umDia) {
+                return mensagem.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
+            } else if (diff < 2 * umDia) {
+                return 'Ontem'
+            } else {
+                return mensagem.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' })
+            }
+        }
+
+        function showNormalContent() {
+            const mainContent = document.getElementById('mainContent')
+            document.querySelector('.bottom-nav').style.display = 'flex'
+            
+            mainContent.innerHTML = `
+                <div class="welcome-section">
+                    <h1 class="welcome-title" id="welcomeName">Bem-vindo</h1>
+                    <p class="welcome-subtitle">Suas conversas</p>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
+                            </svg>
+                        </div>
+                        <div class="stat-value" id="chatCount">0</div>
+                        <div class="stat-label">Conversas</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                                <circle cx="12" cy="12" r="3"/>
+                            </svg>
+                        </div>
+                        <div class="stat-value" id="linkClicks">0</div>
+                        <div class="stat-label">Visitas</div>
+                    </div>
+                </div>
+
+                <div class="chat-list" id="conversasList">
+                    <div class="empty-state">
+                        <svg viewBox="0 0 24 24" width="48" height="48">
+                            <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
+                        </svg>
+                        <p>Nenhuma conversa ainda</p>
+                    </div>
+                </div>
+            `
+            
+            loadVendedor()
+            loadConversas()
+            setInterval(loadConversas, 10000)
+            showCommunityModal()
+        }
+
+        async function checkUser() {
+            const { data: { user: currentUser } } = await supabaseClient.auth.getUser()
+            user = currentUser
+            if (!user) {
+                window.location.href = 'index.html'
                 return false
             }
-
-            if (Notification.permission === 'granted') {
-                notificacaoPermitida = true
-                btn.style.display = 'none'
-                showToast('✅ Notificações ativadas!')
-                return true
+            
+            const { data } = await supabaseClient
+                .from('vendedores')
+                .select('status')
+                .eq('id', user.id)
+                .single()
+            
+            userStatus = data?.status || 'active'
+            
+            if (userStatus === 'suspended' || userStatus === 'banned') {
+                showBlockScreen(userStatus)
+                return false
             }
-
-            if (Notification.permission !== 'denied') {
-                const permission = await Notification.requestPermission()
-                notificacaoPermitida = permission === 'granted'
-                if (notificacaoPermitida) {
-                    btn.style.display = 'none'
-                    showToast('✅ Notificações ativadas!')
-                } else {
-                    btn.style.display = 'none'
-                }
-                return notificacaoPermitida
-            }
-
-            btn.style.display = 'none'
-            return false
+            
+            showNormalContent()
+            return true
         }
 
-        function mostrarNotificacao(titulo, corpo, icone) {
-            if (!notificacaoPermitida) return
-
-            // Não mostrar notificação se a aba estiver ativa
-            if (document.hasFocus()) return
-
-            try {
-                const notification = new Notification(titulo, {
-                    body: corpo,
-                    icon: icone || '/icon.png',
-                    badge: '/icon.png',
-                    vibrate: [200, 100, 200]
-                })
-
-                notification.onclick = function() {
-                    window.focus()
-                    this.close()
-                }
-
-                // Fechar automaticamente após 5 segundos
-                setTimeout(() => notification.close(), 5000)
-            } catch (e) {
-                console.log('Erro ao mostrar notificação:', e)
-            }
-        }
-
-        // Mostrar botão de permissão se necessário
-        setTimeout(() => {
-            if (Notification.permission === 'default') {
-                document.getElementById('notificationPermission').classList.add('show')
-            }
-        }, 2000)
-
-        // ========== FUNÇÕES DE UPLOAD ==========
-        async function uploadImage(file) {
+        async function uploadFoto(file) {
             const fileExt = file.name.split('.').pop()
-            const fileName = `${conversaId}_${Date.now()}.${fileExt}`
-            const filePath = `chat_images/${fileName}`
-
-            console.log('📤 Enviando imagem:', { filePath, size: file.size })
+            const fileName = `${user.id}_${Date.now()}.${fileExt}`
+            const filePath = `avatars/${fileName}`
 
             const { error } = await supabaseClient.storage
                 .from('keygram')
                 .upload(filePath, file)
 
-            if (error) {
-                console.error('❌ Erro no upload:', error)
-                throw error
-            }
+            if (error) throw error
 
             const { data: { publicUrl } } = supabaseClient.storage
                 .from('keygram')
                 .getPublicUrl(filePath)
 
-            console.log('✅ Upload concluído, URL:', publicUrl)
             return publicUrl
         }
 
-        window.triggerFileUpload = function() {
-            document.getElementById('fileInput').click()
+        window.triggerUpload = function() {
+            document.getElementById('imageUpload').click()
         }
 
         window.handleImageUpload = async function(event) {
@@ -642,287 +955,275 @@
                 showToast('Apenas imagens são permitidas')
                 return
             }
-
-            if (file.size > 5 * 1024 * 1024) {
-                showToast('Imagem deve ter no máximo 5MB')
+            
+            if (file.size > 2 * 1024 * 1024) {
+                showToast('Imagem deve ter no máximo 2MB')
                 return
             }
 
-            const attachButton = document.getElementById('attachButton')
-            attachButton.disabled = true
-            showToast('Enviando imagem...')
-
             try {
-                const imageUrl = await uploadImage(file)
-                await enviarMensagemImagem(imageUrl)
+                showToast('Enviando imagem...')
+                const fotoUrl = await uploadFoto(file)
+                vendedorData.foto_url = fotoUrl
+                
+                document.getElementById('imagePreview').src = fotoUrl
+                document.getElementById('imagePreview').style.display = 'block'
+                document.getElementById('uploadHint').textContent = 'Foto carregada'
+                
+                const avatar = document.getElementById('userAvatar')
+                avatar.innerHTML = `<img src="${fotoUrl}" alt="Avatar">`
+                
                 showToast('Imagem enviada!')
             } catch (error) {
-                console.error('Erro ao enviar imagem:', error)
                 showToast('Erro ao enviar imagem')
-            } finally {
-                attachButton.disabled = false
-                event.target.value = ''
             }
         }
 
-        async function enviarMensagemImagem(imageUrl) {
-            const { error } = await supabaseClient
-                .from('mensagens')
-                .insert({
-                    conversa_id: conversaId,
-                    remetente: 'lead',
-                    conteudo: imageUrl
-                })
-
-            if (error) {
-                throw error
-            }
-        }
-
-        function showToast(message) {
-            const toast = document.getElementById('toast')
-            toast.textContent = message
-            toast.classList.add('show')
-            setTimeout(() => toast.classList.remove('show'), 2000)
-        }
-
-        function escapeHtml(text) {
-            const div = document.createElement('div')
-            div.textContent = text
-            return div.innerHTML
-        }
-
-        // Função para abrir imagem em tela cheia
-        window.openImageModal = function(src) {
-            document.getElementById('modalImage').src = src;
-            document.getElementById('imageModal').classList.add('active');
-        }
-
-        // Função para formatar mensagem (suporta imagens)
-        function formatMessage(msg) {
-            // Verificar se é imagem (URL do storage)
-            const isImage = msg.conteudo?.startsWith('http') && 
-                          (msg.conteudo.includes('.jpg') || msg.conteudo.includes('.png') || 
-                           msg.conteudo.includes('.jpeg') || msg.conteudo.includes('.gif') ||
-                           msg.conteudo.includes('.webp') || msg.conteudo.includes('supabase'));
-            
-            if (isImage) {
-                // É imagem - mostra a imagem
-                return `<img src="${escapeHtml(msg.conteudo)}" class="message-image" onclick="openImageModal('${escapeHtml(msg.conteudo)}')">`;
-            } else {
-                // É texto normal
-                return escapeHtml(msg.conteudo);
-            }
-        }
-
-        // Função para registrar visita
-        async function registrarVisita(vendedorId) {
+        async function loadUserMetrics(userId) {
             try {
-                await supabaseClient
+                const { count: totalConversas } = await supabaseClient
+                    .from('conversas')
+                    .select('*', { count: 'exact', head: true })
+                    .eq('vendedor_id', userId)
+
+                const { count: totalVisitas } = await supabaseClient
                     .from('visitas')
-                    .insert({
-                        vendedor_id: vendedorId,
-                        user_agent: navigator.userAgent
-                    })
-                console.log('Visita registrada com sucesso!')
+                    .select('*', { count: 'exact', head: true })
+                    .eq('vendedor_id', userId)
+
+                document.getElementById('chatCount').textContent = totalConversas || 0
+                document.getElementById('linkClicks').textContent = totalVisitas || 0
             } catch (error) {
-                console.error('Erro ao registrar visita:', error)
+                console.error('Erro ao carregar métricas:', error)
             }
         }
 
-        // Carregar dados do vendedor (igual ao antigo que funciona)
         async function loadVendedor() {
-            const { data: vendedor } = await supabaseClient
+            if (!user) return
+
+            let { data } = await supabaseClient
                 .from('vendedores')
                 .select('*')
-                .eq('link_hash', hash)
+                .eq('id', user.id)
                 .single()
 
-            if (!vendedor) {
-                alert('Vendedor não encontrado!')
-                window.location.href = 'index.html'
-                return
-            }
-
-            vendedorId = vendedor.id  // ← USANDO 'id' IGUAL AO ANTIGO
-            vendedorNome = vendedor.nome || 'Vendedor'
-            vendedorFoto = vendedor.foto_url
-            
-            // Registrar visita
-            await registrarVisita(vendedor.id)
-            
-            // Mostrar nome com selo se for verificado
-            const nomeSpan = document.getElementById('vendorName')
-            if (vendedor.verified) {
-                nomeSpan.innerHTML = `${escapeHtml(vendedor.nome || 'Vendedor')} 
-                    <span class="verified-badge" title="Vendedor Verificado">
-                        <svg viewBox="0 0 24 24">
-                            <polyline points="20 6 9 17 4 12"/>
-                        </svg>
-                    </span>`
-            } else {
-                nomeSpan.textContent = vendedor.nome || 'Vendedor'
-            }
-            
-            if (vendedor.foto_url) {
-                document.getElementById('vendorAvatar').innerHTML = 
-                    `<img src="${vendedor.foto_url}" alt="Avatar">`
-            }
-
-            // Criar ou pegar conversa
-            await getOrCreateConversa(vendedor.id)
-        }
-
-        async function getOrCreateConversa(vendedorId) {
-            // Procura conversa existente (igual ao antigo, mas usando maybeSingle para evitar erros)
-            let { data: conversa } = await supabaseClient
-                .from('conversas')
-                .select('*')
-                .eq('vendedor_id', vendedorId)
-                .eq('lead_id', leadId)
-                .maybeSingle()
-
-            if (!conversa) {
-                // Cria nova conversa
-                const { data: nova } = await supabaseClient
-                    .from('conversas')
+            if (!data) {
+                const hash = Math.random().toString(36).substring(2, 15) + 
+                            Math.random().toString(36).substring(2, 15)
+                
+                const { data: newData } = await supabaseClient
+                    .from('vendedores')
                     .insert({
-                        vendedor_id: vendedorId,
-                        lead_id: leadId,
-                        status: 'active'
+                        id: user.id,
+                        nome: user.user_metadata?.name || 'Usuário',
+                        descricao: '',
+                        link_hash: hash
                     })
                     .select()
                     .single()
-                conversa = nova
+                
+                data = newData
             }
 
-            conversaId = conversa.id
-            
-            // Carregar mensagens antigas
-            await loadMessages()
-            
-            // Escutar mensagens novas
-            subscribeToMessages()
+            if (data && !data.link_hash) {
+                const hash = Math.random().toString(36).substring(2, 15) + 
+                            Math.random().toString(36).substring(2, 15)
+                
+                await supabaseClient
+                    .from('vendedores')
+                    .update({ link_hash: hash })
+                    .eq('id', user.id)
+                
+                data.link_hash = hash
+            }
+
+            if (data) {
+                vendedorData = data
+                
+                const welcomeTitle = document.getElementById('welcomeName')
+                if (data.verified) {
+                    welcomeTitle.innerHTML = `Olá, ${data.nome} 
+                        <span class="verified-badge">
+                            <svg viewBox="0 0 24 24">
+                                <polyline points="20 6 9 17 4 12"/>
+                            </svg>
+                        </span>`
+                } else {
+                    welcomeTitle.textContent = `Olá, ${data.nome || 'Bem-vindo'}`
+                }
+                
+                document.getElementById('modalName').value = data.nome || ''
+                document.getElementById('modalDescription').value = data.descricao || ''
+                
+                await loadUserMetrics(user.id)
+                
+                if (data.foto_url) {
+                    const avatar = document.getElementById('userAvatar')
+                    avatar.innerHTML = `<img src="${data.foto_url}" alt="Avatar">`
+                    document.getElementById('imagePreview').src = data.foto_url
+                    document.getElementById('imagePreview').style.display = 'block'
+                    document.getElementById('uploadHint').textContent = 'Foto carregada'
+                }
+                
+                if (data.link_hash) {
+                    const baseUrl = window.location.origin
+                    const chatUrl = `${baseUrl}/chat.html?hash=${data.link_hash}`
+                    document.getElementById('linkDisplay').textContent = chatUrl
+                }
+            }
         }
 
-        async function loadMessages() {
-            const { data: messages } = await supabaseClient
-                .from('mensagens')
-                .select('*')
-                .eq('conversa_id', conversaId)
-                .order('created_at', { ascending: true })
+        window.saveSettings = async function() {
+            const nome = document.getElementById('modalName').value
+            const descricao = document.getElementById('modalDescription').value
 
-            const area = document.getElementById('messagesArea')
-            
-            if (!messages || messages.length === 0) {
-                area.innerHTML = `
-                    <div class="welcome-message">
-                        <svg viewBox="0 0 24 24" width="40" height="40" style="margin-bottom: 16px;">
+            const { error } = await supabaseClient
+                .from('vendedores')
+                .upsert({
+                    id: user.id,
+                    nome: nome,
+                    descricao: descricao,
+                    foto_url: vendedorData.foto_url || null
+                })
+
+            if (error) {
+                showToast('Erro ao salvar')
+            } else {
+                showToast('Perfil atualizado')
+                document.getElementById('welcomeName').textContent = nome ? `Olá, ${nome}` : 'Bem-vindo'
+                closeSettings()
+            }
+        }
+
+        window.copyLink = function() {
+            const link = document.getElementById('linkDisplay').textContent
+            navigator.clipboard.writeText(link)
+            showToast('Link copiado')
+        }
+
+        async function loadConversas() {
+            if (!user) return
+
+            const { data: conversas } = await supabaseClient
+                .from('conversas')
+                .select('*')
+                .eq('vendedor_id', user.id)
+                .eq('status', 'active')
+                .order('created_at', { ascending: false })
+
+            const lista = document.getElementById('conversasList')
+            if (!conversas || conversas.length === 0) {
+                lista.innerHTML = `
+                    <div class="empty-state">
+                        <svg viewBox="0 0 24 24" width="48" height="48">
                             <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
                         </svg>
-                        <p>Inicie a conversa enviando uma mensagem</p>
+                        <p>Nenhuma conversa ainda</p>
                     </div>
                 `
                 return
             }
 
-            console.log(`📨 Carregadas ${messages.length} mensagens`)
-            area.innerHTML = messages.map(msg => `
-                <div class="message ${msg.remetente}">
-                    <div class="message-bubble">${formatMessage(msg)}</div>
-                    <div class="message-time">${new Date(msg.created_at).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}</div>
-                </div>
-            `).join('')
+            // Para cada conversa, buscar última mensagem e contador de não lidas
+            const conversasComDetalhes = await Promise.all(conversas.map(async (c) => {
+                const { data: ultimaMsg } = await supabaseClient
+                    .from('mensagens')
+                    .select('*')
+                    .eq('conversa_id', c.id)
+                    .order('created_at', { ascending: false })
+                    .limit(1)
+                    .single()
 
-            // Scroll para última mensagem
-            area.scrollTop = area.scrollHeight
+                const { count: naoLidas } = await supabaseClient
+                    .from('mensagens')
+                    .select('*', { count: 'exact', head: true })
+                    .eq('conversa_id', c.id)
+                    .eq('remetente', 'lead')
+                    .eq('lida', false)
+
+                return {
+                    ...c,
+                    ultimaMensagem: ultimaMsg,
+                    naoLidas: naoLidas || 0
+                }
+            }))
+
+            lista.innerHTML = conversasComDetalhes.map(c => {
+                const ultimaMsg = c.ultimaMensagem
+                const temNaoLidas = c.naoLidas > 0
+                const previewMsg = ultimaMsg ? 
+                    (ultimaMsg.conteudo.substring(0, 30) + (ultimaMsg.conteudo.length > 30 ? '...' : '')) : 
+                    'Iniciar conversa...'
+                
+                return `
+                    <div class="chat-item" onclick="window.location.href='chat-vendedor.html?conv=${c.id}'">
+                        <div class="chat-avatar">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                                <circle cx="12" cy="7" r="4"/>
+                            </svg>
+                        </div>
+                        <div class="chat-info">
+                            <div class="chat-header-info">
+                                <div class="chat-name">Lead #${c.lead_id.slice(0, 8)}</div>
+                                <div class="chat-time">${ultimaMsg ? formatarHorario(ultimaMsg.created_at) : ''}</div>
+                            </div>
+                            <div class="chat-message">
+                                <span class="chat-message-preview" style="${temNaoLidas ? 'color: rgba(255,255,255,0.9);' : ''}">
+                                    ${previewMsg}
+                                </span>
+                                ${temNaoLidas ? `<span class="chat-badge">${c.naoLidas}</span>` : ''}
+                            </div>
+                        </div>
+                    </div>
+                `
+            }).join('')
         }
 
-        function subscribeToMessages() {
-            console.log('👂 Escutando mensagens novas...')
-            supabaseClient
-                .channel(`conversa:${conversaId}`)
-                .on('postgres_changes', 
-                    { 
-                        event: 'INSERT', 
-                        schema: 'public', 
-                        table: 'mensagens',
-                        filter: `conversa_id=eq.${conversaId}`
-                    },
-                    (payload) => {
-                        console.log('📩 Nova mensagem recebida:', payload.new)
-                        
-                        const area = document.getElementById('messagesArea')
-                        
-                        // Remove welcome message se existir
-                        if (area.children.length === 1 && area.children[0].classList.contains('welcome-message')) {
-                            area.innerHTML = ''
-                        }
-
-                        const msgDiv = document.createElement('div')
-                        msgDiv.className = `message ${payload.new.remetente}`
-                        msgDiv.innerHTML = `
-                            <div class="message-bubble">${formatMessage(payload.new)}</div>
-                            <div class="message-time">${new Date(payload.new.created_at).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}</div>
-                        `
-                        area.appendChild(msgDiv)
-                        area.scrollTop = area.scrollHeight
-
-                        // NOTIFICAÇÃO: Se for mensagem do vendedor
-                        if (payload.new.remetente === 'vendor' && !document.hasFocus()) {
-                            const isImage = payload.new.conteudo?.startsWith('http');
-                            const mensagemPreview = isImage ? '📷 Enviou uma imagem' : payload.new.conteudo.substring(0, 50) + (payload.new.conteudo.length > 50 ? '...' : '');
-                            
-                            mostrarNotificacao(
-                                vendedorNome,
-                                mensagemPreview,
-                                vendedorFoto
-                            )
-                        }
-                    }
-                )
-                .subscribe()
-        }
-
-        window.sendMessage = async function() {
-            const input = document.getElementById('messageInput')
-            const texto = input.value.trim()
+        window.switchTab = function(tab) {
+            if (userStatus !== 'active') return
             
-            if (!texto || !conversaId) return
+            document.getElementById('navChats').classList.remove('active')
+            document.getElementById('navGrupos').classList.remove('active')
+            document.getElementById('navAutomacao').classList.remove('active')
+            document.getElementById('navSettings').classList.remove('active')
 
-            const sendButton = document.getElementById('sendButton')
-            sendButton.disabled = true
-
-            console.log('📤 Enviando mensagem:', texto)
-
-            const { error } = await supabaseClient
-                .from('mensagens')
-                .insert({
-                    conversa_id: conversaId,
-                    remetente: 'lead',
-                    conteudo: texto
-                })
-
-            if (error) {
-                console.error('Erro ao enviar mensagem:', error)
-                showToast('Erro ao enviar mensagem')
-            } else {
-                console.log('✅ Mensagem enviada com sucesso')
+            if (tab === 'chats') {
+                document.getElementById('navChats').classList.add('active')
+                showNormalContent()
             }
-
-            input.value = ''
-            sendButton.disabled = false
         }
 
-        // Permitir enviar com Enter
-        document.getElementById('messageInput').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                sendMessage()
+        window.openSettings = function() {
+            document.getElementById('modalName').value = vendedorData.nome || ''
+            document.getElementById('modalDescription').value = vendedorData.descricao || ''
+            if (vendedorData.foto_url) {
+                document.getElementById('imagePreview').src = vendedorData.foto_url
+                document.getElementById('imagePreview').style.display = 'block'
+                document.getElementById('uploadHint').textContent = 'Foto carregada'
             }
-        })
+            
+            document.getElementById('settingsModal').classList.add('active')
+            document.getElementById('navChats').classList.remove('active')
+            document.getElementById('navSettings').classList.add('active')
+        }
 
-        // Iniciar
-        loadVendedor()
+        window.closeSettings = function() {
+            document.getElementById('settingsModal').classList.remove('active')
+            document.getElementById('navChats').classList.add('active')
+            document.getElementById('navSettings').classList.remove('active')
+        }
+
+        window.handleLogout = async function() {
+            await supabaseClient.auth.signOut()
+            window.location.href = 'index.html'
+        }
+
+        async function init() {
+            await checkUser()
+        }
+
+        init()
     </script>
 </body>
-                                                           </html>
+                        </html>
