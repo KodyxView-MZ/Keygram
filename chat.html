@@ -158,6 +158,7 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
+        /* CORREÇÃO: As classes CSS devem corresponder aos valores do banco */
         .message.vendor {
             align-self: flex-start;
         }
@@ -485,11 +486,8 @@
         }
         console.log('🎯 Lead ID:', leadId)
 
-        // ========== FUNÇÃO DE SCROLL PERFEITA ==========
         function scrollParaFinal(force = false) {
             const area = document.getElementById('messagesArea')
-            
-            // Pequeno delay para garantir que as mensagens foram renderizadas
             setTimeout(() => {
                 if (force) {
                     area.scrollTop = area.scrollHeight
@@ -502,7 +500,7 @@
             }, 50)
         }
 
-        // ========== NOTIFICAÇÕES QUE FUNCIONAM ==========
+        // ========== NOTIFICAÇÕES ==========
         async function solicitarPermissaoNotificacao() {
             if (!('Notification' in window)) {
                 showToast('❌ Notificações não suportadas')
@@ -519,18 +517,11 @@
         }
 
         function notificarLead(titulo, mensagem, imagem) {
-            // 1. SEMPRE mostra toast
             showToast(`🔔 ${titulo}: ${mensagem}`)
-            
-            // 2. VIBRAÇÃO (funciona em qualquer celular)
             if ('vibrate' in navigator) {
                 navigator.vibrate([200, 100, 200])
             }
-            
-            // 3. MUDA O TÍTULO DA PÁGINA (chama atenção)
             document.title = `🔔 ${titulo} - KEYGRAM`
-            
-            // 4. TENTA NOTIFICAÇÃO REAL (se permitido)
             if (Notification.permission === 'granted' && !document.hasFocus()) {
                 try {
                     new Notification(titulo, {
@@ -542,14 +533,11 @@
                     console.log('Erro na notificação:', e)
                 }
             }
-            
-            // 5. VOLTA O TÍTULO DEPOIS DE 3 SEGUNDOS
             setTimeout(() => {
                 document.title = 'KEYGRAM • Chat'
             }, 3000)
         }
 
-        // Verificar permissão ao carregar
         setTimeout(() => {
             if ('Notification' in window && Notification.permission === 'default') {
                 document.getElementById('notificationPermission').classList.add('show')
@@ -734,22 +722,29 @@
                 return
             }
 
-            area.innerHTML = messages.map(msg => `
-                <div class="message ${msg.remetente}">
-                    <div class="message-bubble">${formatMessage(msg)}</div>
-                    <div class="message-time">${new Date(msg.created_at).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}</div>
-                </div>
-            `).join('')
+            console.log('📨 Mensagens carregadas:', messages)
+            area.innerHTML = messages.map(msg => {
+                console.log(`Mensagem: remetente=${msg.remetente}, conteudo=${msg.conteudo.substring(0, 20)}`)
+                return `
+                    <div class="message ${msg.remetente}">
+                        <div class="message-bubble">${formatMessage(msg)}</div>
+                        <div class="message-time">${new Date(msg.created_at).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}</div>
+                    </div>
+                `
+            }).join('')
 
             scrollParaFinal(true)
         }
 
         function subscribeToMessages() {
+            console.log('👂 Inscrevendo para mensagens da conversa:', conversaId)
             supabaseClient
                 .channel(`conversa:${conversaId}`)
                 .on('postgres_changes', 
                     { event: 'INSERT', schema: 'public', table: 'mensagens', filter: `conversa_id=eq.${conversaId}` },
                     (payload) => {
+                        console.log('📩 Nova mensagem recebida:', payload.new)
+                        
                         const area = document.getElementById('messagesArea')
                         
                         if (area.children.length === 1 && area.children[0].classList.contains('welcome-message')) {
@@ -766,8 +761,9 @@
                         
                         scrollParaFinal(false)
 
-                        // ========== NOTIFICAÇÃO QUANDO VENDEDOR RESPONDE ==========
+                        // NOTIFICAÇÃO QUANDO VENDEDOR RESPONDE
                         if (payload.new.remetente === 'vendor') {
+                            console.log('🔔 Mensagem do vendedor recebida!')
                             const isImage = payload.new.conteudo?.startsWith('http')
                             const mensagemPreview = isImage ? '📷 Enviou uma imagem' : 
                                 payload.new.conteudo.substring(0, 50) + (payload.new.conteudo.length > 50 ? '...' : '')
@@ -788,6 +784,8 @@
             const sendButton = document.getElementById('sendButton')
             sendButton.disabled = true
 
+            console.log('📤 Enviando mensagem como lead:', texto)
+
             const { error } = await supabaseClient
                 .from('mensagens')
                 .insert({
@@ -796,7 +794,12 @@
                     conteudo: texto
                 })
 
-            if (error) showToast('Erro ao enviar mensagem')
+            if (error) {
+                console.error('Erro ao enviar:', error)
+                showToast('Erro ao enviar mensagem')
+            } else {
+                console.log('✅ Mensagem enviada com sucesso')
+            }
             input.value = ''
             sendButton.disabled = false
         }
