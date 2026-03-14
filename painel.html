@@ -4,6 +4,30 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>KEYGRAM • Painel</title>
+    
+    <!-- Favicon / Logotipo para compartilhamento -->
+    <link rel="icon" type="image/png" href="ei_1773333191455-removebg-preview.png">
+    <link rel="apple-touch-icon" href="ei_1773333191455-removebg-preview.png">
+    
+    <!-- Open Graph / Facebook / WhatsApp / Telegram -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://keygram.vercel.app/">
+    <meta property="og:title" content="KEYGRAM - Painel do Vendedor">
+    <meta property="og:description" content="Gerencie suas conversas e leads de forma privada e segura">
+    <meta property="og:image" content="https://keygram.vercel.app/ei_1773333191455-removebg-preview.png">
+    <meta property="og:image:width" content="512">
+    <meta property="og:image:height" content="512">
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://keygram.vercel.app/">
+    <meta property="twitter:title" content="KEYGRAM - Painel do Vendedor">
+    <meta property="twitter:description" content="Gerencie suas conversas e leads de forma privada e segura">
+    <meta property="twitter:image" content="https://keygram.vercel.app/ei_1773333191455-removebg-preview.png">
+    
+    <!-- Theme Color -->
+    <meta name="theme-color" content="#000000">
+    
     <style>
         * {
             margin: 0;
@@ -1076,7 +1100,7 @@
             return data
         }
 
-        function calcularFimPremium(dataPagamento) {
+        function calcularFimVip(dataPagamento) {
             if (!dataPagamento) return 'N/A'
             const data = new Date(dataPagamento)
             data.setMonth(data.getMonth() + 1)
@@ -1087,24 +1111,24 @@
             const planoInfo = document.getElementById('planoInfo')
             
             if (vendedorData.pago) {
-                // Plano Premium
-                const fimPremium = calcularFimPremium(vendedorData.data_pagamento)
+                // Plano VIP (sem coroa)
+                const fimVip = calcularFimVip(vendedorData.data_pagamento)
                 planoInfo.innerHTML = `
                     <div class="modal-info-item">
                         <span class="modal-info-label">Plano atual</span>
-                        <span class="modal-info-value">👑 Premium</span>
+                        <span class="modal-info-value">VIP</span>
                     </div>
                     <div class="modal-info-item">
                         <span class="modal-info-label">Data de criação</span>
                         <span class="modal-info-value">${formatarData(vendedorData.created_at)}</span>
                     </div>
                     <div class="modal-info-item">
-                        <span class="modal-info-label">Ativação do Premium</span>
+                        <span class="modal-info-label">Ativação do VIP</span>
                         <span class="modal-info-value">${formatarData(vendedorData.data_pagamento)}</span>
                     </div>
                     <div class="modal-info-item">
                         <span class="modal-info-label">Expira em</span>
-                        <span class="modal-info-value">${formatarData(fimPremium)}</span>
+                        <span class="modal-info-value">${formatarData(fimVip)}</span>
                     </div>
                 `
             } else {
@@ -1473,13 +1497,13 @@
                     welcomeTitle.textContent = `Olá, ${data.nome || 'Bem-vindo'}`
                 }
                 
-                // NOVO: Atualizar informações do plano
+                // NOVO: Atualizar informações do plano (sem coroa)
                 const planoIcone = document.getElementById('planoIcone')
                 const planoNome = document.getElementById('planoNome')
                 
                 if (data.pago) {
-                    planoIcone.innerHTML = `<svg viewBox="0 0 24 24"><path d="M2 12 L7 2 L12 7 L17 2 L22 12 L12 22 L2 12Z"/></svg>`
-                    planoNome.textContent = '👑 Premium'
+                    planoIcone.innerHTML = `<svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>`
+                    planoNome.textContent = 'VIP'
                 } else {
                     planoIcone.innerHTML = `<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>`
                     planoNome.textContent = '⏱️ Free Trial'
