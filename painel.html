@@ -339,7 +339,7 @@
             margin-top: 4px;
         }
 
-        /* NOVO: Estilo do Plano */
+        /* Estilo do Plano */
         .plano-container {
             display: flex;
             align-items: center;
@@ -445,6 +445,7 @@
             cursor: pointer;
             transition: background 0.2s;
             border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+            position: relative;
         }
 
         .chat-item:hover {
@@ -506,6 +507,7 @@
             display: flex;
             align-items: center;
             gap: 4px;
+            position: relative;
         }
 
         .chat-message-preview {
@@ -518,19 +520,77 @@
         }
 
         .chat-badge {
-            background: rgba(255, 255, 255, 0.1);
+            background: #25D366;
             color: #ffffff;
             font-size: 12px;
-            font-weight: 500;
-            min-width: 20px;
-            height: 20px;
-            border-radius: 10px;
+            font-weight: 600;
+            min-width: 22px;
+            height: 22px;
+            border-radius: 11px;
             display: flex;
             align-items: center;
             justify-content: center;
             padding: 0 6px;
-            margin-left: auto;
+            margin-left: 8px;
             border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        /* Grupo Item */
+        .grupo-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 20px;
+            cursor: pointer;
+            transition: background 0.2s;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+        }
+
+        .grupo-item:hover {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .grupo-avatar {
+            width: 52px;
+            height: 52px;
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .grupo-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 16px;
+        }
+
+        .grupo-avatar svg {
+            width: 26px;
+            height: 26px;
+            stroke: rgba(255, 255, 255, 0.5);
+        }
+
+        .grupo-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .grupo-nome {
+            font-size: 17px;
+            font-weight: 500;
+            color: #ffffff;
+            margin-bottom: 4px;
+        }
+
+        .grupo-meta {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.5);
         }
 
         /* Empty State */
@@ -886,7 +946,7 @@
                 </svg>
                 <span>Chats</span>
             </div>
-            <div class="nav-item" onclick="emDesenvolvimento('grupos')" id="navGrupos">
+            <div class="nav-item" onclick="switchTab('grupos')" id="navGrupos">
                 <svg viewBox="0 0 24 24">
                     <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
                     <circle cx="9" cy="7" r="4"/>
@@ -1021,7 +1081,7 @@
         </div>
     </div>
 
-    <!-- NOVO: Modal de Detalhes do Plano -->
+    <!-- Modal de Detalhes do Plano -->
     <div class="modal" id="planoModal">
         <div class="modal-content">
             <div class="modal-header">
@@ -1055,6 +1115,7 @@
         let user = null
         let grupos = []
         let userStatus = 'active'
+        let totalNaoLidas = 0
 
         function showToast(message) {
             const toast = document.getElementById('toast')
@@ -1077,12 +1138,12 @@
 
         // ========== FUNÇÃO PARA WHATSAPP ==========
         function abrirWhatsAppAtivacao() {
-            const numero = '258833333264' // Código de Moçambique +258
+            const numero = '258833333264'
             const mensagem = encodeURIComponent('Olá! Gostaria de ativar meu plano KEYGRAM de 149 MZN.')
             window.open(`https://wa.me/${numero}?text=${mensagem}`, '_blank')
         }
 
-        // NOVAS FUNÇÕES DO PLANO
+        // FUNÇÕES DO PLANO
         function formatarData(data) {
             if (!data) return 'N/A'
             return new Date(data).toLocaleDateString('pt-BR', {
@@ -1111,7 +1172,6 @@
             const planoInfo = document.getElementById('planoInfo')
             
             if (vendedorData.pago) {
-                // Plano VIP (sem coroa)
                 const fimVip = calcularFimVip(vendedorData.data_pagamento)
                 planoInfo.innerHTML = `
                     <div class="modal-info-item">
@@ -1132,7 +1192,6 @@
                     </div>
                 `
             } else {
-                // Plano Free Trial
                 const fimTrial = calcularFimTrial(vendedorData.created_at)
                 const diasRestantes = Math.max(0, Math.ceil((fimTrial - new Date()) / (1000 * 60 * 60 * 24)))
                 
@@ -1163,7 +1222,7 @@
             document.getElementById('planoModal').classList.remove('active')
         }
 
-        // ========== TELA DE TRIAL EXPIRADO ==========
+        // TELA DE TRIAL EXPIRADO
         function showTrialExpiredScreen() {
             const mainContent = document.getElementById('mainContent')
             document.querySelector('.bottom-nav').style.display = 'none'
@@ -1250,19 +1309,103 @@
             `
         }
 
-        function formatarHorario(data) {
-            const agora = new Date()
+        // NOVA FUNÇÃO: Formatar horário para Moçambique
+        function formatarHorarioMoz(data) {
             const mensagem = new Date(data)
+            const agora = new Date()
             const diff = agora - mensagem
             const umDia = 24 * 60 * 60 * 1000
             
+            // Ajustar para fuso horário de Moçambique (UTC+2)
+            const optionsMoz = { 
+                timeZone: 'Africa/Maputo',
+                hour: '2-digit', 
+                minute: '2-digit',
+                hour12: false
+            }
+            
             if (diff < umDia) {
-                return mensagem.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
+                return mensagem.toLocaleTimeString('pt-BR', optionsMoz)
             } else if (diff < 2 * umDia) {
                 return 'Ontem'
+            } else if (diff < 7 * umDia) {
+                return mensagem.toLocaleDateString('pt-BR', { 
+                    timeZone: 'Africa/Maputo',
+                    weekday: 'short' 
+                })
             } else {
-                return mensagem.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' })
+                return mensagem.toLocaleDateString('pt-BR', { 
+                    timeZone: 'Africa/Maputo',
+                    day: '2-digit', 
+                    month: '2-digit' 
+                })
             }
+        }
+
+        // NOVA FUNÇÃO: Carregar grupos
+        async function loadGrupos() {
+            if (!user) return
+
+            const { data } = await supabaseClient
+                .from('grupos')
+                .select('*')
+                .eq('vendedor_id', user.id)
+                .order('created_at', { ascending: false })
+
+            grupos = data || []
+            renderGrupos()
+        }
+
+        function renderGrupos() {
+            const lista = document.getElementById('gruposList')
+            
+            if (!lista) return
+            
+            if (grupos.length === 0) {
+                lista.innerHTML = `
+                    <div class="empty-state">
+                        <svg viewBox="0 0 24 24" width="48" height="48">
+                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                            <line x1="9" y1="9" x2="15" y2="15"/>
+                            <line x1="15" y1="9" x2="9" y2="15"/>
+                        </svg>
+                        <p>Nenhum grupo criado</p>
+                        <p style="font-size: 13px; margin-top: 8px;">Crie um grupo para compartilhar com seus leads</p>
+                    </div>
+                `
+                return
+            }
+
+            lista.innerHTML = grupos.map(g => {
+                const dataCriacao = new Date(g.created_at).toLocaleDateString('pt-BR', {
+                    timeZone: 'Africa/Maputo',
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric'
+                })
+                
+                return `
+                    <div class="grupo-item" onclick="window.location.href='grupo.html?hash=${g.link_hash}'">
+                        <div class="grupo-avatar">
+                            ${g.foto_url ? 
+                                `<img src="${g.foto_url}" alt="Avatar">` : 
+                                `<svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="9" y1="9" x2="15" y2="15"/><line x1="15" y1="9" x2="9" y2="15"/></svg>`
+                            }
+                        </div>
+                        <div class="grupo-info">
+                            <div class="grupo-nome">${escapeHtml(g.nome)}</div>
+                            <div class="grupo-meta">Criado em ${dataCriacao}</div>
+                        </div>
+                    </div>
+                `
+            }).join('')
+        }
+
+        function escapeHtml(text) {
+            if (!text) return ''
+            const div = document.createElement('div')
+            div.textContent = text
+            return div.innerHTML
         }
 
         function showNormalContent() {
@@ -1275,11 +1418,9 @@
                     <p class="welcome-subtitle">Suas conversas</p>
                 </div>
 
-                <!-- NOVO: Informação do Plano -->
+                <!-- Informação do Plano -->
                 <div class="plano-container" onclick="openPlanoModal()" id="planoContainer">
-                    <div class="plano-icone" id="planoIcone">
-                        <!-- Será preenchido via JavaScript -->
-                    </div>
+                    <div class="plano-icone" id="planoIcone"></div>
                     <span class="plano-nome" id="planoNome"></span>
                     <span class="plano-link">Clique para detalhes</span>
                 </div>
@@ -1306,12 +1447,38 @@
                     </div>
                 </div>
 
-                <div class="chat-list" id="conversasList">
-                    <div class="empty-state">
-                        <svg viewBox="0 0 24 24" width="48" height="48">
-                            <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
-                        </svg>
-                        <p>Nenhuma conversa ainda</p>
+                <!-- Chats Section -->
+                <div id="chatsSection">
+                    <div class="chat-list" id="conversasList">
+                        <div class="empty-state">
+                            <svg viewBox="0 0 24 24" width="48" height="48">
+                                <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
+                            </svg>
+                            <p>Nenhuma conversa ainda</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Grupos Section (inicialmente oculto) -->
+                <div id="gruposSection" class="hidden">
+                    <div style="padding: 0 20px;">
+                        <button class="btn-add" onclick="window.location.href='criar-grupo.html'" style="width: 100%; padding: 16px; border: 1px dashed rgba(255,255,255,0.1); border-radius: 20px; background: transparent; color: #ffffff; font-size: 15px; cursor: pointer; margin-bottom: 20px; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                            <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor">
+                                <line x1="12" y1="5" x2="12" y2="19"/>
+                                <line x1="5" y1="12" x2="19" y2="12"/>
+                            </svg>
+                            Novo grupo
+                        </button>
+                    </div>
+                    <div id="gruposList" class="chat-list">
+                        <div class="empty-state">
+                            <svg viewBox="0 0 24 24" width="48" height="48">
+                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                                <line x1="9" y1="9" x2="15" y2="15"/>
+                                <line x1="15" y1="9" x2="9" y2="15"/>
+                            </svg>
+                            <p>Nenhum grupo criado</p>
+                        </div>
                     </div>
                 </div>
             `
@@ -1330,7 +1497,6 @@
                 return false
             }
             
-            // Buscar dados do vendedor incluindo data de criação
             const { data: vendedor, error } = await supabaseClient
                 .from('vendedores')
                 .select('*')
@@ -1344,15 +1510,11 @@
             
             userStatus = vendedor?.status || 'active'
             
-            // Verificar se é trial e já passou 3 dias
             if (vendedor && vendedor.created_at) {
                 const dataCriacao = new Date(vendedor.created_at)
                 const hoje = new Date()
                 const diffDias = Math.floor((hoje - dataCriacao) / (1000 * 60 * 60 * 24))
                 
-                console.log('📅 Dias desde criação:', diffDias)
-                
-                // Se passou mais de 3 dias e não é pago, bloquear
                 if (diffDias >= 3 && !vendedor.pago) {
                     showTrialExpiredScreen()
                     return false
@@ -1497,7 +1659,6 @@
                     welcomeTitle.textContent = `Olá, ${data.nome || 'Bem-vindo'}`
                 }
                 
-                // NOVO: Atualizar informações do plano (sem coroa)
                 const planoIcone = document.getElementById('planoIcone')
                 const planoNome = document.getElementById('planoNome')
                 
@@ -1566,7 +1727,7 @@
                 .select('*')
                 .eq('vendedor_id', user.id)
                 .eq('status', 'active')
-                .order('created_at', { ascending: false })
+                .order('last_message_at', { ascending: false })
 
             const lista = document.getElementById('conversasList')
             if (!conversas || conversas.length === 0) {
@@ -1581,7 +1742,7 @@
                 return
             }
 
-            // Para cada conversa, buscar última mensagem e contador de não lidas
+            // Buscar última mensagem e contador de não lidas para cada conversa
             const conversasComDetalhes = await Promise.all(conversas.map(async (c) => {
                 const { data: ultimaMsg } = await supabaseClient
                     .from('mensagens')
@@ -1605,6 +1766,23 @@
                 }
             }))
 
+            // Ordenar: primeiro os com mensagens não lidas, depois por data
+            conversasComDetalhes.sort((a, b) => {
+                if (a.naoLidas > 0 && b.naoLidas === 0) return -1
+                if (a.naoLidas === 0 && b.naoLidas > 0) return 1
+                return new Date(b.ultimaMensagem?.created_at || 0) - new Date(a.ultimaMensagem?.created_at || 0)
+            })
+
+            // Calcular total de não lidas para o badge geral (opcional)
+            totalNaoLidas = conversasComDetalhes.reduce((acc, c) => acc + c.naoLidas, 0)
+            
+            // Atualizar título da página se houver não lidas
+            if (totalNaoLidas > 0) {
+                document.title = `(${totalNaoLidas}) KEYGRAM • Painel`
+            } else {
+                document.title = 'KEYGRAM • Painel'
+            }
+
             lista.innerHTML = conversasComDetalhes.map(c => {
                 const ultimaMsg = c.ultimaMensagem
                 const temNaoLidas = c.naoLidas > 0
@@ -1623,7 +1801,7 @@
                         <div class="chat-info">
                             <div class="chat-header-info">
                                 <div class="chat-name">Lead #${c.lead_id.slice(0, 8)}</div>
-                                <div class="chat-time">${ultimaMsg ? formatarHorario(ultimaMsg.created_at) : ''}</div>
+                                <div class="chat-time">${ultimaMsg ? formatarHorarioMoz(ultimaMsg.created_at) : ''}</div>
                             </div>
                             <div class="chat-message">
                                 <span class="chat-message-preview" style="${temNaoLidas ? 'color: rgba(255,255,255,0.9);' : ''}">
@@ -1645,9 +1823,18 @@
             document.getElementById('navAutomacao').classList.remove('active')
             document.getElementById('navSettings').classList.remove('active')
 
+            const chatsSection = document.getElementById('chatsSection')
+            const gruposSection = document.getElementById('gruposSection')
+
             if (tab === 'chats') {
                 document.getElementById('navChats').classList.add('active')
-                showNormalContent()
+                if (chatsSection) chatsSection.classList.remove('hidden')
+                if (gruposSection) gruposSection.classList.add('hidden')
+            } else if (tab === 'grupos') {
+                document.getElementById('navGrupos').classList.add('active')
+                if (chatsSection) chatsSection.classList.add('hidden')
+                if (gruposSection) gruposSection.classList.remove('hidden')
+                loadGrupos()
             }
         }
 
@@ -1683,4 +1870,4 @@
         init()
     </script>
 </body>
-    </html>
+                        </html>
