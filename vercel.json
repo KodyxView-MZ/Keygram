@@ -1,0 +1,16 @@
+{
+  "rewrites": [
+    { "source": "/", "destination": "/lp.html" },
+    { "source": "/painel", "destination": "/painel.html" },
+    { "source": "/chat", "destination": "/chat.html" },
+    { "source": "/chat-vendedor", "destination": "/chat-vendedor.html" },
+    { "source": "/grupo", "destination": "/grupo.html" },
+    { "source": "/grupolead", "destination": "/grupolead.html" },
+    { "source": "/admin", "destination": "/admins.html" },
+    { "source": "/social", "destination": "/social.html" },
+    { "source": "/criar-grupo", "destination": "/criar-grupo.html" },
+    { "source": "/parceiro", "destination": "/parceiro.html" },
+    { "source": "/index", "destination": "/index.html" },
+    { "source": "/lp", "destination": "/lp.html" }
+  ]
+}
