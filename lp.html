@@ -1,0 +1,1199 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>KEYGRAM • Private Sales Hub</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="ei_1773333191455-removebg-preview.png">
+    <link rel="apple-touch-icon" href="ei_1773333191455-removebg-preview.png">
+    
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://keygram.vercel.app/">
+    <meta property="og:title" content="KEYGRAM - Chat Privado para Vendedores">
+    <meta property="og:description" content="Comunique-se com leads de forma privada, crie grupos de prévia e automatize suas vendas">
+    <meta property="og:image" content="https://keygram.vercel.app/ei_1773333191455-removebg-preview.png">
+    
+    <!-- Theme Color -->
+    <meta name="theme-color" content="#000000">
+    
+    <style>
+        :root {
+            --bg: #000000;
+            --surface: rgba(255, 255, 255, 0.03);
+            --border: rgba(255, 255, 255, 0.08);
+            --text-main: #ffffff;
+            --text-dim: #a1a1a1;
+            --accent: #007AFF;
+            --glass: blur(20px);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+            100% { transform: translateY(0px); }
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(0, 122, 255, 0.7); }
+            70% { box-shadow: 0 0 0 15px rgba(0, 122, 255, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(0, 122, 255, 0); }
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, "SF Pro Display", "Helvetica Neue", Arial, sans-serif;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text-main);
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* --- Header --- */
+        .header {
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border);
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: var(--glass);
+            -webkit-backdrop-filter: var(--glass);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            padding: 0 20px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logo-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            filter: brightness(0) invert(1);
+        }
+
+        .logo-text {
+            font-size: 22px;
+            letter-spacing: -0.5px;
+        }
+
+        .logo-text strong {
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        .logo-text span {
+            font-weight: 300;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border-radius: 30px;
+            font-size: 13px;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            white-space: nowrap;
+        }
+
+        .btn-outline {
+            color: var(--text-main);
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-outline:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .btn-primary {
+            background: #007AFF;
+            color: white;
+            box-shadow: 0 10px 20px -10px #007AFF;
+        }
+
+        .btn-primary:hover {
+            background: #0051a8;
+            transform: translateY(-2px);
+            box-shadow: 0 15px 30px -10px #007AFF;
+        }
+
+        .btn-wa {
+            background: #25D366;
+            color: white;
+        }
+        
+        .btn-wa:hover {
+            background: #128C7E;
+            transform: translateY(-2px);
+        }
+
+        /* --- Dashboard Mockup --- */
+        .dashboard-mockup {
+            margin: 40px 0 20px;
+            position: relative;
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 30px 60px -30px rgba(0,122,255,0.3);
+        }
+
+        .macbook-bar {
+            background: #1a1a1a;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            padding: 0 15px;
+            gap: 8px;
+        }
+
+        .macbook-circle {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #ff5f57;
+        }
+
+        .macbook-circle:nth-child(2) {
+            background: #febc2e;
+        }
+
+        .macbook-circle:nth-child(3) {
+            background: #28c840;
+        }
+
+        .dashboard-image {
+            width: 100%;
+            height: auto;
+            display: block;
+            border: 2px solid rgba(255,255,255,0.05);
+            border-top: none;
+        }
+
+        /* --- Hero --- */
+        .hero {
+            padding: 60px 0 40px;
+            text-align: center;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        .hero-title {
+            font-size: clamp(36px, 7vw, 64px);
+            font-weight: 800;
+            line-height: 1.05;
+            margin-bottom: 20px;
+            letter-spacing: -2px;
+            background: linear-gradient(180deg, #FFFFFF 0%, #A1A1A1 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-title span {
+            color: #007AFF;
+            -webkit-text-fill-color: #007AFF;
+        }
+
+        .hero-subtitle {
+            font-size: clamp(15px, 3.5vw, 18px);
+            color: var(--text-dim);
+            max-width: 550px;
+            margin: 0 auto 25px;
+            font-weight: 400;
+            padding: 0 15px;
+        }
+
+        .hero-stats {
+            display: flex;
+            justify-content: center;
+            gap: clamp(15px, 4vw, 30px);
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: clamp(22px, 4vw, 28px);
+            font-weight: 700;
+            color: #007AFF;
+        }
+
+        .stat-label {
+            font-size: clamp(11px, 2.5vw, 13px);
+            color: rgba(255,255,255,0.5);
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+            padding: 0 15px;
+        }
+
+        .btn-large {
+            padding: 12px 24px;
+            font-size: clamp(13px, 3vw, 15px);
+        }
+
+        /* --- Features --- */
+        .section-title {
+            text-align: center;
+            font-size: clamp(30px, 5vw, 42px);
+            font-weight: 700;
+            margin-bottom: 14px;
+        }
+        
+        .section-title span {
+            color: #007AFF;
+        }
+        
+        .section-subtitle {
+            text-align: center;
+            font-size: clamp(13px, 2.5vw, 16px);
+            color: var(--text-dim);
+            max-width: 550px;
+            margin: 0 auto 35px;
+            padding: 0 15px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 16px;
+            margin: 30px 0 50px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 24px 20px;
+            border-radius: 24px;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            border-color: rgba(255,255,255,0.2);
+            transform: translateY(-5px);
+            background: rgba(255,255,255,0.05);
+        }
+
+        .icon-box {
+            width: 40px;
+            height: 40px;
+            margin-bottom: 16px;
+            color: #007AFF;
+        }
+
+        .card h3 {
+            font-size: 18px;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .card p {
+            color: var(--text-dim);
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        /* --- Testimonial Card Melhorado --- */
+        .testimonial-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 24px;
+            padding: 28px 24px;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .testimonial-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 30% 30%, rgba(0,122,255,0.1), transparent 70%);
+            pointer-events: none;
+        }
+
+        .testimonial-icon {
+            width: 48px;
+            height: 48px;
+            margin-bottom: 16px;
+            color: #007AFF;
+            opacity: 0.8;
+        }
+
+        .testimonial-icon svg {
+            width: 48px;
+            height: 48px;
+            stroke: currentColor;
+            fill: none;
+        }
+
+        .testimonial-text {
+            font-size: 15px;
+            line-height: 1.6;
+            color: rgba(255,255,255,0.9);
+            margin-bottom: 20px;
+            font-style: italic;
+        }
+
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .author-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 22px;
+            background: rgba(0,122,255,0.1);
+            border: 1px solid rgba(0,122,255,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .author-avatar svg {
+            width: 22px;
+            height: 22px;
+            stroke: #007AFF;
+        }
+
+        .author-info h4 {
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 3px;
+            color: #fff;
+        }
+
+        .author-info p {
+            font-size: 12px;
+            color: rgba(255,255,255,0.5);
+        }
+
+        /* --- How it works --- */
+        .how-it-works {
+            padding: 50px 0;
+            background: linear-gradient(135deg, #0a0a0a 0%, #000000 100%);
+        }
+
+        .steps {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+
+        .step {
+            text-align: center;
+            flex: 1;
+            min-width: 180px;
+            padding: 0 10px;
+        }
+
+        .step-number {
+            width: 44px;
+            height: 44px;
+            background: #007AFF;
+            border-radius: 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: 700;
+            margin: 0 auto 12px;
+        }
+
+        .step-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .step-description {
+            color: var(--text-dim);
+            font-size: 13px;
+            max-width: 200px;
+            margin: 0 auto;
+        }
+
+        /* --- Pricing --- */
+        .pricing-wrap {
+            padding: 50px 0 60px;
+            background: radial-gradient(circle at center, #111 0%, #000 100%);
+        }
+
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .price-card {
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 28px;
+            padding: 32px 24px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .price-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(255,255,255,0.15);
+        }
+
+        .price-card.featured {
+            border-color: #007AFF;
+            background: rgba(0, 122, 255, 0.05);
+        }
+
+        .popular-badge {
+            position: absolute;
+            top: 16px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #007AFF;
+            color: white;
+            padding: 5px 14px;
+            border-radius: 30px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .price-name {
+            font-size: 22px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .price-val {
+            font-size: clamp(36px, 6vw, 48px);
+            font-weight: 700;
+            margin: 12px 0;
+            letter-spacing: -1.5px;
+        }
+
+        .price-val small {
+            font-size: 13px;
+            color: var(--text-dim);
+            letter-spacing: 0;
+            font-weight: 400;
+        }
+
+        .features-list {
+            list-style: none;
+            text-align: left;
+            margin: 24px 0;
+        }
+
+        .features-list li {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-dim);
+            margin-bottom: 10px;
+            font-size: 13px;
+        }
+
+        .check-icon {
+            width: 16px;
+            height: 16px;
+            stroke: #34C759;
+            flex-shrink: 0;
+        }
+
+        /* --- Testimonials Grid --- */
+        .testimonials {
+            padding: 50px 0;
+        }
+
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        /* --- CTA --- */
+        .cta {
+            padding: 50px 20px;
+            text-align: center;
+            background: linear-gradient(135deg, #007AFF 0%, #0051a8 100%);
+            border-radius: 36px;
+            margin: 30px 0;
+        }
+
+        .cta-title {
+            font-size: clamp(28px, 5vw, 40px);
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .cta-subtitle {
+            font-size: clamp(13px, 2.5vw, 15px);
+            color: rgba(255,255,255,0.9);
+            max-width: 450px;
+            margin: 0 auto 20px;
+            padding: 0 15px;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn-cta {
+            background: #ffffff;
+            color: #000000;
+            padding: 12px 28px;
+            font-size: 15px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .btn-cta:hover {
+            background: #f0f0f0;
+            transform: translateY(-2px);
+        }
+
+        /* --- Footer --- */
+        .footer {
+            padding: 50px 0 25px;
+            border-top: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .footer-logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+        
+        .footer-logo img {
+            width: 28px;
+            height: 28px;
+        }
+
+        .footer-about {
+            color: rgba(255,255,255,0.5);
+            font-size: 12px;
+            line-height: 1.5;
+            max-width: 220px;
+        }
+
+        .footer-title {
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+        
+        .footer-links li {
+            margin-bottom: 8px;
+        }
+        
+        .footer-links a {
+            color: rgba(255,255,255,0.5);
+            text-decoration: none;
+            font-size: 12px;
+            transition: color 0.3s;
+        }
+        
+        .footer-links a:hover {
+            color: #ffffff;
+        }
+
+        .footer-bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 25px;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            color: rgba(255,255,255,0.5);
+            font-size: 11px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .vantix-logo {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .vantix-logo svg {
+            width: 18px;
+            height: 18px;
+            stroke: rgba(255,255,255,0.5);
+        }
+
+        .social-links {
+            display: flex;
+            gap: 16px;
+        }
+        
+        .social-links a {
+            color: rgba(255,255,255,0.5);
+            text-decoration: none;
+            font-size: 16px;
+        }
+        
+        .social-links a:hover {
+            color: #ffffff;
+        }
+
+        /* --- Utilities --- */
+        .tag {
+            background: rgba(255,255,255,0.05);
+            padding: 5px 12px;
+            border-radius: 100px;
+            font-size: 11px;
+            color: var(--text-dim);
+            border: 1px solid rgba(255,255,255,0.1);
+            display: inline-block;
+            margin-bottom: 16px;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        /* Ajustes mobile otimizados */
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 16px;
+            }
+            
+            .header {
+                height: 65px;
+                padding: 0 12px;
+            }
+            
+            .logo-icon {
+                width: 32px;
+                height: 32px;
+            }
+            
+            .logo-text {
+                font-size: 18px;
+            }
+            
+            .nav-buttons {
+                gap: 6px;
+            }
+            
+            .btn {
+                padding: 6px 12px;
+                font-size: 12px;
+            }
+            
+            .hero {
+                padding: 40px 0 30px;
+            }
+            
+            .grid {
+                gap: 12px;
+                margin: 20px 0 30px;
+            }
+            
+            .card {
+                padding: 20px 16px;
+            }
+            
+            .steps {
+                flex-direction: column;
+                align-items: center;
+                gap: 25px;
+            }
+            
+            .step {
+                width: 100%;
+                max-width: 240px;
+            }
+            
+            .pricing-grid {
+                gap: 16px;
+            }
+            
+            .price-card {
+                padding: 28px 20px;
+            }
+            
+            .testimonials-grid {
+                gap: 16px;
+            }
+            
+            .footer-grid {
+                grid-template-columns: 1fr;
+                gap: 25px;
+            }
+            
+            .footer-about {
+                max-width: 100%;
+            }
+            
+            .footer-bottom {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .dashboard-mockup {
+                margin: 30px 0 15px;
+            }
+            
+            .macbook-bar {
+                height: 25px;
+                padding: 0 12px;
+            }
+            
+            .macbook-circle {
+                width: 10px;
+                height: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <div class="logo-icon">
+                    <img src="ei_1773333191455-removebg-preview.png" alt="KEYGRAM">
+                </div>
+                <div class="logo-text">
+                    <strong>KEY</strong><span>GRAM</span>
+                </div>
+            </div>
+            <nav class="nav-buttons">
+                <a href="index.html" class="btn btn-outline">Entrar</a>
+                <a href="index.html" class="btn btn-primary">Começar</a>
+            </nav>
+        </header>
+
+        <!-- Hero Section -->
+        <section class="hero">
+            <span class="tag">✨ Versão 2.0 disponível</span>
+            <h1 class="hero-title">Venda com <span>privacidade</span>.<br>Conversas que convertem.</h1>
+            <p class="hero-subtitle">A infraestrutura de comunicação premium para vendedores que buscam exclusividade e organização de leads.</p>
+            
+            <div class="hero-stats">
+                <div class="stat-item">
+                    <div class="stat-number">+10k</div>
+                    <div class="stat-label">Leads/mês</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">98%</div>
+                    <div class="stat-label">Satisfação</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">24/7</div>
+                    <div class="stat-label">Suporte</div>
+                </div>
+            </div>
+            
+            <div class="hero-buttons">
+                <a href="index.html" class="btn btn-primary btn-large">Criar conta grátis</a>
+                <a href="https://wa.me/258870293855?text=Olá! Gostaria de saber mais sobre o KEYGRAM" target="_blank" class="btn btn-wa btn-large">
+                    <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" fill="none">
+                        <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
+                    </svg>
+                    Suporte
+                </a>
+            </div>
+        </section>
+
+        <!-- Dashboard Mockup (novo) -->
+        <div class="dashboard-mockup">
+            <div class="macbook-bar">
+                <span class="macbook-circle"></span>
+                <span class="macbook-circle"></span>
+                <span class="macbook-circle"></span>
+            </div>
+            <img src="Screenshot_20260314_084129_Chrome.jpg" alt="KEYGRAM Dashboard" class="dashboard-image" onerror="this.src='https://via.placeholder.com/1200x600?text=KEYGRAM+Dashboard'">
+        </div>
+
+        <!-- Features Grid -->
+        <div class="grid">
+            <div class="card">
+                <div class="icon-box">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
+                        <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
+                    </svg>
+                </div>
+                <h3>Chat Privado</h3>
+                <p>Conversas individuais com cada lead, organizadas e com histórico completo.</p>
+            </div>
+
+            <div class="card">
+                <div class="icon-box">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
+                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                        <line x1="9" y1="9" x2="15" y2="15"/>
+                        <line x1="15" y1="9" x2="9" y2="15"/>
+                    </svg>
+                </div>
+                <h3>Grupos de Prévia</h3>
+                <p>Crie grupos para compartilhar conteúdo exclusivo com múltiplos leads.</p>
+            </div>
+
+            <div class="card">
+                <div class="icon-box">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
+                        <circle cx="12" cy="12" r="10"/>
+                        <polyline points="12 6 12 12 16 14"/>
+                    </svg>
+                </div>
+                <h3>Automação</h3>
+                <p>Automatize a qualificação de leads e respostas frequentes.</p>
+            </div>
+
+            <div class="card">
+                <div class="icon-box">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
+                        <rect x="1" y="4" width="22" height="16" rx="2" ry="2"/>
+                        <line x1="1" y1="10" x2="23" y2="10"/>
+                    </svg>
+                </div>
+                <h3>Planos Recorrentes</h3>
+                <p>Sistema de assinaturas integrado com M-Pesa e cartões.</p>
+            </div>
+
+            <div class="card">
+                <div class="icon-box">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
+                        <path d="M2 16.1A5 5 0 0 1 5.9 20M2 12.05A9 9 0 0 1 9.95 20M2 8V6a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-6"/>
+                        <line x1="2" y1="20" x2="2.01" y2="20"/>
+                    </svg>
+                </div>
+                <h3>Notificações</h3>
+                <p>Receba alertas em tempo real quando lead enviar mensagem.</p>
+            </div>
+
+            <div class="card">
+                <div class="icon-box">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
+                        <circle cx="12" cy="8" r="4"/>
+                        <path d="M5.37 20c.92-3 3.74-5 6.63-5s5.71 2 6.63 5"/>
+                    </svg>
+                </div>
+                <h3>Perfil Verificado</h3>
+                <p>Selo de verificação para aumentar a confiança dos seus leads.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- How it Works -->
+    <section class="how-it-works">
+        <div class="container">
+            <h2 class="section-title">Como <span>funciona</span></h2>
+            <p class="section-subtitle">Comece a usar em menos de 5 minutos</p>
+
+            <div class="steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <h3 class="step-title">Crie sua conta</h3>
+                    <p class="step-description">Registre-se gratuitamente e comece seu trial de 3 dias</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <h3 class="step-title">Compartilhe seu link</h3>
+                    <p class="step-description">Envie seu link único para os leads começarem a conversar</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <h3 class="step-title">Venda mais</h3>
+                    <p class="step-description">Gerencie conversas e feche mais negócios</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing -->
+    <section class="pricing-wrap">
+        <div class="container">
+            <h2 class="section-title">Planos <span>simples</span></h2>
+            <p class="section-subtitle">Escolha o plano ideal para o seu negócio. Assinaturas via M-Pesa e Cartões.</p>
+
+            <div class="pricing-grid">
+                <div class="price-card">
+                    <div class="price-name">Trial</div>
+                    <div class="price-val">Grátis</div>
+                    <ul class="features-list">
+                        <li><svg class="check-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg> 3 dias de teste</li>
+                        <li><svg class="check-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg> Chat com leads</li>
+                        <li><svg class="check-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg> Até 50 leads</li>
+                    </ul>
+                    <a href="index.html" class="btn btn-outline" style="display: block;">Começar</a>
+                </div>
+
+                <div class="price-card featured">
+                    <div class="popular-badge">Mais escolhido</div>
+                    <div class="price-name">VIP</div>
+                    <div class="price-val">149 <small>MZN/mês</small></div>
+                    <ul class="features-list">
+                        <li><svg class="check-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg> Leads ilimitados</li>
+                        <li><svg class="check-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg> Grupos de prévia</li>
+                        <li><svg class="check-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg> Automações</li>
+                        <li><svg class="check-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg> Selo de verificado</li>
+                        <li><svg class="check-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg> Suporte prioritário</li>
+                    </ul>
+                    <a href="https://paysuite.tech/checkout/01kkywafbjsqhrn50k8fhkbd4n" class="btn btn-primary" style="display: block;" target="_blank">Assinar agora</a>
+                </div>
+
+                <div class="price-card">
+                    <div class="price-name">Anual</div>
+                    <div class="price-val">1.490 <small>MZN/ano</small></div>
+                    <ul class="features-list">
+                        <li><svg class="check-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg> Todos os recursos VIP</li>
+                        <li><svg class="check-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg> 2 meses grátis</li>
+                        <li><svg class="check-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg> Suporte VIP</li>
+                    </ul>
+                    <a href="https://paysuite.tech/checkout/01kkyw6zpdxn98at7qt49r1sqy" class="btn btn-outline" style="display: block;" target="_blank">Assinar</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section class="testimonials">
+        <div class="container">
+            <h2 class="section-title">O que nossos <span>clientes</span> dizem</h2>
+            <p class="section-subtitle">Mais de 500 vendedores já aumentaram suas vendas com KEYGRAM</p>
+
+            <div class="testimonials-grid">
+                <div class="testimonial-card">
+                    <div class="testimonial-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                        </svg>
+                    </div>
+                    <div class="testimonial-text">
+                        "Desde que comecei a usar KEYGRAM, minhas vendas aumentaram 40%. Os leads se sentem mais confortáveis para conversar."
+                    </div>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">
+                            <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/></svg>
+                        </div>
+                        <div class="author-info">
+                            <h4>João Silva</h4>
+                            <p>Vendedor • Moda</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="testimonial-card">
+                    <div class="testimonial-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                        </svg>
+                    </div>
+                    <div class="testimonial-text">
+                        "A funcionalidade de grupos de prévia mudou meu negócio. Consigo mostrar meus produtos para vários leads ao mesmo tempo."
+                    </div>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">
+                            <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/></svg>
+                        </div>
+                        <div class="author-info">
+                            <h4>Maria Santos</h4>
+                            <p>Vendedora • Eletrônicos</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="testimonial-card">
+                    <div class="testimonial-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                        </svg>
+                    </div>
+                    <div class="testimonial-text">
+                        "O suporte é incrível! Qualquer dúvida que tenho, respondem rapidamente no WhatsApp."
+                    </div>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">
+                            <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/></svg>
+                        </div>
+                        <div class="author-info">
+                            <h4>Carlos Oliveira</h4>
+                            <p>Vendedor • Cosméticos</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="testimonial-card">
+                    <div class="testimonial-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                        </svg>
+                    </div>
+                    <div class="testimonial-text">
+                        "Vale cada centavo! O plano VIP me deu acesso a recursos que realmente fizeram diferença nas minhas vendas."
+                    </div>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">
+                            <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/></svg>
+                        </div>
+                        <div class="author-info">
+                            <h4>Ana Pereira</h4>
+                            <p>Vendedora • Calçados</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <div class="container">
+        <section class="cta">
+            <h2 class="cta-title">Pronto para vender mais?</h2>
+            <p class="cta-subtitle">Comece seu trial gratuito de 3 dias agora mesmo. Sem compromisso.</p>
+            <div class="cta-buttons">
+                <a href="index.html" class="btn-cta">Criar conta grátis</a>
+                <a href="https://wa.me/258870293855?text=Olá! Gostaria de saber mais sobre o KEYGRAM" target="_blank" class="btn btn-wa" style="padding: 12px 28px; font-size: 14px;">
+                    <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" fill="none">
+                        <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
+                    </svg>
+                    Falar com suporte
+                </a>
+            </div>
+        </section>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div>
+                    <div class="footer-logo">
+                        <img src="ei_1773333191455-removebg-preview.png" alt="KEYGRAM">
+                        <div class="logo-text">
+                            <strong>KEY</strong><span>GRAM</span>
+                        </div>
+                    </div>
+                    <p class="footer-about">
+                        A plataforma definitiva para vendedores se comunicarem com leads de forma privada e profissional.
+                    </p>
+                </div>
+                <div>
+                    <h4 class="footer-title">Produto</h4>
+                    <ul class="footer-links">
+                        <li><a href="#features">Funcionalidades</a></li>
+                        <li><a href="#pricing">Preços</a></li>
+                        <li><a href="#">FAQ</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="footer-title">Empresa</h4>
+                    <ul class="footer-links">
+                        <li><a href="#">Sobre nós</a></li>
+                        <li><a href="#">Blog</a></li>
+                        <li><a href="#">Carreiras</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="footer-title">Legal</h4>
+                    <ul class="footer-links">
+                        <li><a href="#">Termos de uso</a></li>
+                        <li><a href="#">Política de privacidade</a></li>
+                        <li><a href="#">Cookies</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <div class="vantix-logo">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                    </svg>
+                    <span>Powered by Vantix Tech</span>
+                </div>
+                <div class="social-links">
+                    <a href="#">📱</a>
+                    <a href="#">📘</a>
+                    <a href="#">📸</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+  </html>
