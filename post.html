@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>KEYGRAM • Criar Post</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background: #000000;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            color: #ffffff;
+        }
+
+        .app-container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            max-width: 800px;
+            margin: 0 auto;
+            width: 100%;
+            background: #000000;
+            position: relative;
+        }
+
+        /* Header */
+        .top-nav {
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .back-button {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border-radius: 30px;
+            transition: background 0.2s;
+        }
+
+        .back-button:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .back-button svg {
+            width: 24px;
+            height: 24px;
+            stroke: #ffffff;
+        }
+
+        .top-nav h1 {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .publish-btn {
+            background: #007AFF;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .publish-btn:hover {
+            background: #0051a8;
+            transform: scale(0.98);
+        }
+
+        .publish-btn:disabled {
+            background: #1a1a1a;
+            color: rgba(255,255,255,0.3);
+            cursor: not-allowed;
+        }
+
+        /* Content Area */
+        .content-area {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        /* User Info */
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .user-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #1a1a1a, #0a0a0a);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .user-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .user-avatar svg {
+            width: 24px;
+            height: 24px;
+            stroke: rgba(255, 255, 255, 0.5);
+        }
+
+        .user-name {
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .user-username {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        /* Privacy Selector */
+        .privacy-selector {
+            margin-bottom: 20px;
+        }
+
+        .privacy-option {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: 8px;
+        }
+
+        .privacy-option:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .privacy-option.selected {
+            border-color: #007AFF;
+            background: rgba(0, 122, 255, 0.05);
+        }
+
+        .privacy-icon svg {
+            width: 22px;
+            height: 22px;
+            stroke: #ffffff;
+        }
+
+        .privacy-text {
+            flex: 1;
+        }
+
+        .privacy-title {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .privacy-desc {
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        /* Text Input */
+        .text-input {
+            margin-bottom: 20px;
+        }
+
+        .post-textarea {
+            width: 100%;
+            min-height: 150px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 16px;
+            color: #ffffff;
+            font-size: 16px;
+            line-height: 1.5;
+            resize: none;
+            outline: none;
+        }
+
+        .post-textarea:focus {
+            border-color: #007AFF;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .char-counter {
+            text-align: right;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.4);
+            margin-top: 8px;
+        }
+
+        /* Media Upload */
+        .media-upload {
+            margin-bottom: 20px;
+        }
+
+        .upload-area {
+            border: 1px dashed rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 24px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .upload-area:hover {
+            border-color: #007AFF;
+            background: rgba(0, 122, 255, 0.05);
+        }
+
+        .upload-area svg {
+            width: 32px;
+            height: 32px;
+            stroke: rgba(255, 255, 255, 0.5);
+            margin-bottom: 8px;
+        }
+
+        .upload-area p {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .media-preview {
+            margin-top: 16px;
+            position: relative;
+            display: inline-block;
+        }
+
+        .media-preview img, .media-preview video {
+            max-width: 100%;
+            max-height: 300px;
+            border-radius: 16px;
+        }
+
+        .remove-media {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            width: 32px;
+            height: 32px;
+            background: #ff3b30;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .remove-media svg {
+            width: 18px;
+            height: 18px;
+            stroke: white;
+        }
+
+        /* Schedule */
+        .schedule-option {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            margin-bottom: 20px;
+        }
+
+        .schedule-label {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .schedule-input {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 8px 12px;
+            color: #ffffff;
+            font-size: 13px;
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-100px);
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(20px);
+            color: #000000;
+            padding: 12px 24px;
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: 500;
+            z-index: 1000;
+            transition: transform 0.3s;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(20px);
+        }
+
+        .toast.success {
+            background: #34C759;
+            color: white;
+        }
+
+        .toast.error {
+            background: #ff3b30;
+            color: white;
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <div class="top-nav">
+            <div class="back-button" onclick="window.location.href='social.html'">
+                <svg viewBox="0 0 24 24">
+                    <path d="M19 12H5M12 19l-7-7 7-7"/>
+                </svg>
+            </div>
+            <h1>Criar post</h1>
+            <button class="publish-btn" onclick="publicarPost()" id="publishBtn">Publicar</button>
+        </div>
+
+        <!-- Content Area -->
+        <div class="content-area">
+            <!-- User Info -->
+            <div class="user-info" id="userInfo">
+                <div class="user-avatar" id="userAvatar">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                        <circle cx="12" cy="7" r="4"/>
+                    </svg>
+                </div>
+                <div>
+                    <div class="user-name" id="userName">Carregando...</div>
+                    <div class="user-username" id="userUsername">@carregando</div>
+                </div>
+            </div>
+
+            <!-- Privacy Selector -->
+            <div class="privacy-selector">
+                <div class="privacy-option selected" data-privacy="public" onclick="selectPrivacy('public')">
+                    <div class="privacy-icon">
+                        <svg viewBox="0 0 24 24">
+                            <circle cx="12" cy="12" r="10"/>
+                            <line x1="2" y1="12" x2="22" y2="12"/>
+                        </svg>
+                    </div>
+                    <div class="privacy-text">
+                        <div class="privacy-title">Público</div>
+                        <div class="privacy-desc">Todos podem ver</div>
+                    </div>
+                </div>
+                <div class="privacy-option" data-privacy="followers" onclick="selectPrivacy('followers')">
+                    <div class="privacy-icon">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                            <circle cx="9" cy="7" r="4"/>
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                        </svg>
+                    </div>
+                    <div class="privacy-text">
+                        <div class="privacy-title">Seguidores</div>
+                        <div class="privacy-desc">Apenas quem te segue</div>
+                    </div>
+                </div>
+                <div class="privacy-option" data-privacy="private" onclick="selectPrivacy('private')">
+                    <div class="privacy-icon">
+                        <svg viewBox="0 0 24 24">
+                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                        </svg>
+                    </div>
+                    <div class="privacy-text">
+                        <div class="privacy-title">Apenas eu</div>
+                        <div class="privacy-desc">Somente você pode ver</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Text Input -->
+            <div class="text-input">
+                <textarea class="post-textarea" id="postContent" placeholder="O que você está pensando?" maxlength="500"></textarea>
+                <div class="char-counter"><span id="charCount">0</span>/500</div>
+            </div>
+
+            <!-- Media Upload -->
+            <div class="media-upload">
+                <div class="upload-area" onclick="triggerMediaUpload()">
+                    <input type="file" id="mediaInput" accept="image/*,video/*" style="display: none" onchange="handleMediaUpload(event)">
+                    <svg viewBox="0 0 24 24">
+                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                        <circle cx="8.5" cy="8.5" r="1.5"/>
+                        <polyline points="21 15 16 10 5 21"/>
+                    </svg>
+                    <p>Adicionar imagem ou vídeo</p>
+                </div>
+                <div id="mediaPreview" class="media-preview" style="display: none;"></div>
+            </div>
+
+            <!-- Schedule -->
+            <div class="schedule-option">
+                <span class="schedule-label">Agendar publicação</span>
+                <input type="datetime-local" id="scheduleDate" class="schedule-input">
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div id="toast" class="toast"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        const SUPABASE_URL = 'https://ygptfdflmrgennajulwt.supabase.co'
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlncHRmZGZsbXJnZW5uYWp1bHd0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMwNzY0MDcsImV4cCI6MjA4ODY1MjQwN30.QObFx4MM5oNlBL9bYM5WBQabnXDVxHZrUgaT15efD4g'
+
+        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY)
+
+        let currentUser = null
+        let currentVendedor = null
+        let selectedPrivacy = 'public'
+        let mediaFile = null
+        let mediaType = null
+        let mediaUrl = null
+
+        function showToast(message, type = 'info') {
+            const toast = document.getElementById('toast')
+            toast.textContent = message
+            toast.className = 'toast show ' + (type === 'success' ? 'success' : type === 'error' ? 'error' : '')
+            setTimeout(() => toast.classList.remove('show'), 3000)
+        }
+
+        function setLoading(isLoading) {
+            const btn = document.getElementById('publishBtn')
+            if (isLoading) {
+                btn.disabled = true
+                btn.innerHTML = '<span class="loading-spinner"></span> Publicando...'
+            } else {
+                btn.disabled = false
+                btn.innerHTML = 'Publicar'
+            }
+        }
+
+        function selectPrivacy(privacy) {
+            selectedPrivacy = privacy
+            document.querySelectorAll('.privacy-option').forEach(opt => {
+                opt.classList.remove('selected')
+            })
+            document.querySelector(`.privacy-option[data-privacy="${privacy}"]`).classList.add('selected')
+        }
+
+        function triggerMediaUpload() {
+            document.getElementById('mediaInput').click()
+        }
+
+        async function handleMediaUpload(event) {
+            const file = event.target.files[0]
+            if (!file) return
+
+            if (!file.type.startsWith('image/') && !file.type.startsWith('video/')) {
+                showToast('Apenas imagens e vídeos são permitidos', 'error')
+                return
+            }
+
+            const maxSize = file.type.startsWith('image/') ? 10 * 1024 * 1024 : 50 * 1024 * 1024
+            if (file.size > maxSize) {
+                showToast(`Máximo ${file.type.startsWith('image/') ? '10MB' : '50MB'}`, 'error')
+                return
+            }
+
+            mediaFile = file
+            mediaType = file.type.startsWith('image/') ? 'image' : 'video'
+
+            const previewDiv = document.getElementById('mediaPreview')
+            const reader = new FileReader()
+            reader.onload = (e) => {
+                if (mediaType === 'image') {
+                    previewDiv.innerHTML = `
+                        <div style="position: relative;">
+                            <img src="${e.target.result}" alt="Preview">
+                            <div class="remove-media" onclick="removeMedia()">
+                                <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                            </div>
+                        </div>
+                    `
+                } else {
+                    previewDiv.innerHTML = `
+                        <div style="position: relative;">
+                            <video src="${e.target.result}" controls style="max-width: 100%; max-height: 300px; border-radius: 16px;"></video>
+                            <div class="remove-media" onclick="removeMedia()">
+                                <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                            </div>
+                        </div>
+                    `
+                }
+                previewDiv.style.display = 'block'
+            }
+            reader.readAsDataURL(file)
+        }
+
+        function removeMedia() {
+            mediaFile = null
+            mediaType = null
+            mediaUrl = null
+            document.getElementById('mediaPreview').style.display = 'none'
+            document.getElementById('mediaPreview').innerHTML = ''
+            document.getElementById('mediaInput').value = ''
+        }
+
+        async function uploadMedia(file) {
+            const fileExt = file.name.split('.').pop()
+            const fileName = `${currentUser.id}_${Date.now()}_${Math.random().toString(36)}.${fileExt}`
+            const filePath = `posts/${fileName}`
+
+            const { error } = await supabaseClient.storage
+                .from('keygram')
+                .upload(filePath, file)
+
+            if (error) throw error
+
+            const { data: { publicUrl } } = supabaseClient.storage
+                .from('keygram')
+                .getPublicUrl(filePath)
+
+            return publicUrl
+        }
+
+        async function publicarPost() {
+            const content = document.getElementById('postContent').value.trim()
+            
+            if (!content && !mediaFile) {
+                showToast('Adicione um texto ou mídia', 'error')
+                return
+            }
+
+            if (!currentUser) {
+                showToast('Faça login primeiro', 'error')
+                setTimeout(() => window.location.href = 'index.html', 1500)
+                return
+            }
+
+            setLoading(true)
+
+            try {
+                let mediaUrl = null
+                if (mediaFile) {
+                    mediaUrl = await uploadMedia(mediaFile)
+                }
+
+                const scheduleDate = document.getElementById('scheduleDate').value
+                const publishAt = scheduleDate ? new Date(scheduleDate).toISOString() : null
+
+                const { data, error } = await supabaseClient
+                    .from('posts')
+                    .insert({
+                        user_id: currentUser.id,
+                        user_nome: currentVendedor?.nome || 'Usuário',
+                        user_foto: currentVendedor?.foto_url || null,
+                        content: content || null,
+                        media_url: mediaUrl || null,
+                        media_type: mediaType || null,
+                        privacy: selectedPrivacy,
+                        publish_at: publishAt || new Date().toISOString(),
+                        created_at: new Date().toISOString(),
+                        likes: 0,
+                        comments: 0
+                    })
+                    .select()
+                    .single()
+
+                if (error) throw error
+
+                showToast('Post publicado com sucesso!', 'success')
+                setTimeout(() => {
+                    window.location.href = 'social.html'
+                }, 1500)
+
+            } catch (error) {
+                console.error('Erro ao publicar:', error)
+                showToast('Erro ao publicar: ' + error.message, 'error')
+                setLoading(false)
+            }
+        }
+
+        async function loadCurrentUser() {
+            try {
+                const { data: { user } } = await supabaseClient.auth.getUser()
+                if (!user) {
+                    window.location.href = 'index.html'
+                    return
+                }
+
+                currentUser = user
+
+                const { data: vendedor } = await supabaseClient
+                    .from('vendedores')
+                    .select('*')
+                    .eq('id', user.id)
+                    .single()
+
+                currentVendedor = vendedor
+
+                document.getElementById('userName').textContent = vendedor?.nome || 'Usuário'
+                document.getElementById('userUsername').textContent = `@${vendedor?.link_hash?.slice(0, 12) || 'usuario'}`
+
+                if (vendedor?.foto_url) {
+                    const avatar = document.getElementById('userAvatar')
+                    avatar.innerHTML = `<img src="${vendedor.foto_url}" alt="Avatar">`
+                }
+
+            } catch (error) {
+                console.error('Erro:', error)
+                window.location.href = 'index.html'
+            }
+        }
+
+        // Contador de caracteres
+        document.getElementById('postContent').addEventListener('input', function() {
+            document.getElementById('charCount').textContent = this.value.length
+        })
+
+        loadCurrentUser()
+    </script>
+</body>
+  </html>
