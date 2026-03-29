@@ -120,10 +120,29 @@
             cursor: pointer;
             opacity: 0.8;
             transition: opacity 0.2s;
+            position: relative;
         }
 
         .top-actions svg:hover {
             opacity: 1;
+        }
+
+        /* Tooltip para o ícone da rede social */
+        .top-actions svg[title]:hover::after {
+            content: attr(title);
+            position: absolute;
+            bottom: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(20px);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            white-space: nowrap;
+            z-index: 100;
+            border: 1px solid rgba(255,255,255,0.1);
         }
 
         .user-avatar {
@@ -921,6 +940,12 @@
                     <line x1="12" y1="8" x2="12" y2="16"/>
                     <line x1="8" y1="12" x2="16" y2="12"/>
                 </svg>
+                <!-- NOVO: Ícone Rede Social -->
+                <svg viewBox="0 0 24 24" onclick="window.location.href='social.html'" title="Visitar rede social">
+                    <path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z"/>
+                    <path d="M2 12h20"/>
+                    <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+                </svg>
                 <svg viewBox="0 0 24 24" onclick="showComingSoon()">
                     <circle cx="12" cy="12" r="10"/>
                     <polyline points="12 6 12 12 16 14"/>
@@ -1309,14 +1334,13 @@
             `
         }
 
-        // NOVA FUNÇÃO: Formatar horário para Moçambique
+        // Formatar horário para Moçambique
         function formatarHorarioMoz(data) {
             const mensagem = new Date(data)
             const agora = new Date()
             const diff = agora - mensagem
             const umDia = 24 * 60 * 60 * 1000
             
-            // Ajustar para fuso horário de Moçambique (UTC+2)
             const optionsMoz = { 
                 timeZone: 'Africa/Maputo',
                 hour: '2-digit', 
@@ -1342,7 +1366,7 @@
             }
         }
 
-        // NOVA FUNÇÃO: Carregar grupos
+        // Carregar grupos
         async function loadGrupos() {
             if (!user) return
 
@@ -1418,7 +1442,6 @@
                     <p class="welcome-subtitle">Suas conversas</p>
                 </div>
 
-                <!-- Informação do Plano -->
                 <div class="plano-container" onclick="openPlanoModal()" id="planoContainer">
                     <div class="plano-icone" id="planoIcone"></div>
                     <span class="plano-nome" id="planoNome"></span>
@@ -1447,7 +1470,6 @@
                     </div>
                 </div>
 
-                <!-- Chats Section -->
                 <div id="chatsSection">
                     <div class="chat-list" id="conversasList">
                         <div class="empty-state">
@@ -1459,7 +1481,6 @@
                     </div>
                 </div>
 
-                <!-- Grupos Section (inicialmente oculto) -->
                 <div id="gruposSection" class="hidden">
                     <div style="padding: 0 20px;">
                         <button class="btn-add" onclick="window.location.href='criar-grupo.html'" style="width: 100%; padding: 16px; border: 1px dashed rgba(255,255,255,0.1); border-radius: 20px; background: transparent; color: #ffffff; font-size: 15px; cursor: pointer; margin-bottom: 20px; display: flex; align-items: center; justify-content: center; gap: 8px;">
@@ -1727,9 +1748,10 @@
                 .select('*')
                 .eq('vendedor_id', user.id)
                 .eq('status', 'active')
-                .order('last_message_at', { ascending: false })
+                .order('last_message_at', { ascending: false, nulls: 'last' })
 
             const lista = document.getElementById('conversasList')
+            
             if (!conversas || conversas.length === 0) {
                 lista.innerHTML = `
                     <div class="empty-state">
@@ -1750,7 +1772,7 @@
                     .eq('conversa_id', c.id)
                     .order('created_at', { ascending: false })
                     .limit(1)
-                    .single()
+                    .maybeSingle()
 
                 const { count: naoLidas } = await supabaseClient
                     .from('mensagens')
@@ -1770,13 +1792,13 @@
             conversasComDetalhes.sort((a, b) => {
                 if (a.naoLidas > 0 && b.naoLidas === 0) return -1
                 if (a.naoLidas === 0 && b.naoLidas > 0) return 1
-                return new Date(b.ultimaMensagem?.created_at || 0) - new Date(a.ultimaMensagem?.created_at || 0)
+                const dateA = a.ultimaMensagem?.created_at || 0
+                const dateB = b.ultimaMensagem?.created_at || 0
+                return new Date(dateB) - new Date(dateA)
             })
 
-            // Calcular total de não lidas para o badge geral (opcional)
             totalNaoLidas = conversasComDetalhes.reduce((acc, c) => acc + c.naoLidas, 0)
             
-            // Atualizar título da página se houver não lidas
             if (totalNaoLidas > 0) {
                 document.title = `(${totalNaoLidas}) KEYGRAM • Painel`
             } else {
@@ -1870,4 +1892,4 @@
         init()
     </script>
 </body>
-                        </html>
+                    </html>
